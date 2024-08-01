@@ -1,0 +1,170 @@
+2024-07-31 12:58:51,423 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 13:09:09,199 [17] WARN  BD.Inventory.WebApi.Common.LogHelper.LogWarn - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 13:09:09,295 [17] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Net.Http.HttpRequestException: Error: InternalServerError
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<AddCheckBill>d__8.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 265
+2024-07-31 13:13:05,006 [17] WARN  BD.Inventory.WebApi.Common.LogHelper.LogWarn - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 13:13:09,462 [17] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Net.Http.HttpRequestException: Error: InternalServerError
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<AddCheckBill>d__8.MoveNext()
+2024-07-31 13:13:11,795 [17] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Net.Http.HttpRequestException: Error: InternalServerError
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<AddCheckBill>d__8.MoveNext()
+--- 引发异常的上一位置中堆栈跟踪的末尾 ---
+   在 System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   在 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   在 System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   在 BD.Inventory.WebApi.Controllers.PC.InvCheckController.<SyncData>d__5.MoveNext()
+2024-07-31 13:44:31,566 [53] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 13:44:35,976 [52] WARN  BD.Inventory.WebApi.Common.LogHelper.LogWarn - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 13:44:36,008 [52] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Net.Http.HttpRequestException: Error: Forbidden
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<ImportGoods>d__6.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 146
+2024-07-31 13:45:18,465 [DefaultQuartzScheduler_Worker-1] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.AggregateException: 发生一个或多个错误。 ---> System.Net.Http.HttpRequestException: Error: Forbidden
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<ImportGoods>d__6.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 168
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Threading.Tasks.Task.WaitAll(Task[] tasks, Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   在 System.Threading.Tasks.Task.WaitAll(Task[] tasks, Int32 millisecondsTimeout)
+   在 System.Threading.Tasks.Task.WaitAll(Task[] tasks)
+   在 BD.Inventory.WebApi.QuartzJob.ImportWlnERPJob.Execute(IJobExecutionContext context) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\QuartzJob\ImportWlnERPJob.cs:行号 48
+---> (内部异常 #0) System.Net.Http.HttpRequestException: Error: Forbidden
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<ImportGoods>d__6.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 168<---
+
+2024-07-31 13:50:32,681 [48] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 13:52:12,414 [36] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 13:52:14,094 [37] WARN  BD.Inventory.WebApi.Common.LogHelper.LogWarn - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 13:52:14,175 [37] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Net.Http.HttpRequestException: Error: Forbidden
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<ImportGoods>d__6.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 146
+2024-07-31 13:52:14,234 [DefaultQuartzScheduler_Worker-1] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.AggregateException: 发生一个或多个错误。 ---> System.Net.Http.HttpRequestException: Error: Forbidden
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<ImportGoods>d__6.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 168
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Threading.Tasks.Task.WaitAll(Task[] tasks, Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   在 System.Threading.Tasks.Task.WaitAll(Task[] tasks, Int32 millisecondsTimeout)
+   在 System.Threading.Tasks.Task.WaitAll(Task[] tasks)
+   在 BD.Inventory.WebApi.QuartzJob.ImportWlnERPJob.Execute(IJobExecutionContext context) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\QuartzJob\ImportWlnERPJob.cs:行号 48
+---> (内部异常 #0) System.Net.Http.HttpRequestException: Error: Forbidden
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<ImportGoods>d__6.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 168<---
+
+2024-07-31 14:01:05,983 [9] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 14:10:13,244 [38] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 14:10:14,857 [5] WARN  BD.Inventory.WebApi.Common.LogHelper.LogWarn - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 14:10:14,969 [5] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Net.Http.HttpRequestException: Error: Forbidden
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<ImportGoods>d__6.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 146
+2024-07-31 14:10:15,058 [DefaultQuartzScheduler_Worker-1] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.AggregateException: 发生一个或多个错误。 ---> System.Net.Http.HttpRequestException: Error: Forbidden
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<ImportGoods>d__6.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 168
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Threading.Tasks.Task.WaitAll(Task[] tasks, Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   在 System.Threading.Tasks.Task.WaitAll(Task[] tasks, Int32 millisecondsTimeout)
+   在 System.Threading.Tasks.Task.WaitAll(Task[] tasks)
+   在 BD.Inventory.WebApi.QuartzJob.ImportWlnERPJob.Execute(IJobExecutionContext context) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\QuartzJob\ImportWlnERPJob.cs:行号 51
+---> (内部异常 #0) System.Net.Http.HttpRequestException: Error: Forbidden
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<ImportGoods>d__6.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 168<---
+
+2024-07-31 14:15:16,230 [36] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 14:15:16,304 [DefaultQuartzScheduler_Worker-1] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 14:25:31,508 [7] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 14:25:31,573 [DefaultQuartzScheduler_Worker-1] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 14:25:33,945 [6] WARN  BD.Inventory.WebApi.Common.LogHelper.LogWarn - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 14:25:34,016 [6] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Net.Http.HttpRequestException: Error: Forbidden
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<ImportGoods>d__6.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 146
+2024-07-31 14:25:34,070 [DefaultQuartzScheduler_Worker-2] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.AggregateException: 发生一个或多个错误。 ---> System.Net.Http.HttpRequestException: Error: Forbidden
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<ImportGoods>d__6.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 168
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Threading.Tasks.Task.WaitAll(Task[] tasks, Int32 millisecondsTimeout, CancellationToken cancellationToken)
+   在 System.Threading.Tasks.Task.WaitAll(Task[] tasks, Int32 millisecondsTimeout)
+   在 System.Threading.Tasks.Task.WaitAll(Task[] tasks)
+   在 BD.Inventory.WebApi.QuartzJob.ImportGoodsJob.Execute(IJobExecutionContext context) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\QuartzJob\ImportGoodsJob.cs:行号 52
+---> (内部异常 #0) System.Net.Http.HttpRequestException: Error: Forbidden
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<ImportGoods>d__6.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 168<---
+
+2024-07-31 14:27:32,183 [37] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 14:27:32,255 [DefaultQuartzScheduler_Worker-1] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 14:28:33,622 [48] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 14:28:33,628 [DefaultQuartzScheduler_Worker-2] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 14:30:57,714 [20] WARN  BD.Inventory.WebApi.Common.LogHelper.LogWarn - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 14:31:00,324 [20] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Net.Http.HttpRequestException: Error: InternalServerError
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<AddCheckBill>d__8.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 261
+2024-07-31 14:31:00,380 [20] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Net.Http.HttpRequestException: Error: InternalServerError
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<AddCheckBill>d__8.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 275
+--- 引发异常的上一位置中堆栈跟踪的末尾 ---
+   在 System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   在 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   在 System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   在 BD.Inventory.WebApi.Controllers.PC.InvCheckController.<SyncData>d__5.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\Controllers\PC\InvCheckController.cs:行号 127
+2024-07-31 14:38:12,786 [20] WARN  BD.Inventory.WebApi.Common.LogHelper.LogWarn - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 14:42:56,096 [20] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Net.Http.HttpRequestException: Error: InternalServerError
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<AddCheckBill>d__8.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 261
+2024-07-31 14:43:05,472 [20] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Net.Http.HttpRequestException: Error: InternalServerError
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<AddCheckBill>d__8.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 275
+--- 引发异常的上一位置中堆栈跟踪的末尾 ---
+   在 System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   在 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   在 System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   在 BD.Inventory.WebApi.Controllers.PC.InvCheckController.<SyncData>d__5.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\Controllers\PC\InvCheckController.cs:行号 127
+2024-07-31 15:04:16,048 [8] WARN  BD.Inventory.WebApi.Common.LogHelper.LogWarn - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 15:04:16,132 [8] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Net.Http.HttpRequestException: Error: InternalServerError
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<AddCheckBill>d__8.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 261
+2024-07-31 15:04:16,213 [8] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Net.Http.HttpRequestException: Error: InternalServerError
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<AddCheckBill>d__8.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 275
+--- 引发异常的上一位置中堆栈跟踪的末尾 ---
+   在 System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   在 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   在 System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   在 BD.Inventory.WebApi.Controllers.PC.InvCheckController.<SyncData>d__5.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\Controllers\PC\InvCheckController.cs:行号 127
+2024-07-31 15:12:11,307 [8] WARN  BD.Inventory.WebApi.Common.LogHelper.LogWarn - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 15:12:11,430 [8] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Net.Http.HttpRequestException: Error: InternalServerError
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<AddCheckBill>d__8.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 261
+2024-07-31 15:12:11,500 [8] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Net.Http.HttpRequestException: Error: InternalServerError
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<AddCheckBill>d__8.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 275
+--- 引发异常的上一位置中堆栈跟踪的末尾 ---
+   在 System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   在 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   在 System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   在 BD.Inventory.WebApi.Controllers.PC.InvCheckController.<SyncData>d__5.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\Controllers\PC\InvCheckController.cs:行号 127
+2024-07-31 15:16:55,834 [8] WARN  BD.Inventory.WebApi.Common.LogHelper.LogWarn - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 15:16:55,940 [8] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Net.Http.HttpRequestException: Error: InternalServerError
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<AddCheckBill>d__8.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 261
+2024-07-31 15:16:55,992 [8] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Net.Http.HttpRequestException: Error: InternalServerError
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<AddCheckBill>d__8.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 275
+--- 引发异常的上一位置中堆栈跟踪的末尾 ---
+   在 System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   在 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   在 System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   在 BD.Inventory.WebApi.Controllers.PC.InvCheckController.<SyncData>d__5.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\Controllers\PC\InvCheckController.cs:行号 127
+2024-07-31 15:35:14,961 [8] WARN  BD.Inventory.WebApi.Common.LogHelper.LogWarn - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 15:35:15,058 [8] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Net.Http.HttpRequestException: Error: InternalServerError
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<AddCheckBill>d__8.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 261
+2024-07-31 15:35:15,103 [8] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Net.Http.HttpRequestException: Error: InternalServerError
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<AddCheckBill>d__8.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 275
+--- 引发异常的上一位置中堆栈跟踪的末尾 ---
+   在 System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   在 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   在 System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   在 BD.Inventory.WebApi.Controllers.PC.InvCheckController.<SyncData>d__5.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\Controllers\PC\InvCheckController.cs:行号 127
+2024-07-31 15:41:43,278 [22] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 15:42:15,782 [22] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 15:45:23,651 [9] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 15:49:18,860 [9] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 15:50:36,389 [9] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 15:50:55,031 [9] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 15:52:37,865 [9] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-31 17:40:39,598 [6] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent

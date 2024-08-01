@@ -1,0 +1,33 @@
+2024-07-30 10:15:58,285 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-30 10:27:44,872 [5] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-30 10:28:31,840 [5] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-30 13:06:20,438 [17] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-30 13:10:00,403 [5] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-30 13:13:48,912 [6] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-30 16:00:55,810 [13] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-07-30 16:32:30,743 [8] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.ArgumentException: 另一个 SqlParameterCollection 中已包含 SqlParameter。
+   在 System.Data.SqlClient.SqlParameterCollection.Validate(Int32 index, Object value)
+   在 System.Data.SqlClient.SqlParameterCollection.AddRange(Array values)
+   在 System.Data.SqlClient.SqlParameterCollection.AddRange(SqlParameter[] values)
+   在 BD.Inventory.DBUtility.SqlHelper.Query(String sql, SqlParameter[] parameters) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.DBUtility\SqlHelper.cs:行号 23
+   在 BD.Inventory.Dal.InvCheckDal.GetDetail(String bill_code, Int32 pageSize, Int32 pageIndex, String filedOrder, Int32& recordCount) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Dal\InvCheckDal.cs:行号 108
+   在 BD.Inventory.Bll.InvCheckBll.GetDetail(String bill_code, Int32 pageSize, Int32 pageIndex, String filedOrder, Int32& recordCount) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Bll\InvCheckBll.cs:行号 53
+   在 BD.Inventory.WebApi.Controllers.PC.InvCheckController.SelDetail(String bill_code, Int32 pageIndex, Int32 pageSize) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\Controllers\PC\InvCheckController.cs:行号 80
+2024-07-30 16:36:08,286 [5] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.ArgumentException: 另一个 SqlParameterCollection 中已包含 SqlParameter。
+   在 System.Data.SqlClient.SqlParameterCollection.Validate(Int32 index, Object value)
+   在 System.Data.SqlClient.SqlParameterCollection.AddRange(Array values)
+   在 System.Data.SqlClient.SqlParameterCollection.AddRange(SqlParameter[] values)
+   在 BD.Inventory.DBUtility.SqlHelper.Query(String sql, SqlParameter[] parameters) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.DBUtility\SqlHelper.cs:行号 23
+   在 BD.Inventory.Dal.InvCheckDal.GetDetail(String bill_code, Int32 pageSize, Int32 pageIndex, String filedOrder, Int32& recordCount) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Dal\InvCheckDal.cs:行号 108
+   在 BD.Inventory.Bll.InvCheckBll.GetDetail(String bill_code, Int32 pageSize, Int32 pageIndex, String filedOrder, Int32& recordCount) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Bll\InvCheckBll.cs:行号 53
+   在 BD.Inventory.WebApi.Controllers.PC.InvCheckController.SelDetail(String bill_code, Int32 pageIndex, Int32 pageSize) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\Controllers\PC\InvCheckController.cs:行号 80
+2024-07-30 16:39:18,425 [5] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Data.SqlClient.SqlException (0x80131904): 必须声明标量变量 "@bill_code"。
+   在 BD.Inventory.DBUtility.SqlHelper.Query(String sql, SqlParameter[] parameters) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.DBUtility\SqlHelper.cs:行号 33
+   在 BD.Inventory.Dal.InvCheckDal.GetDetail(String bill_code, Int32 pageSize, Int32 pageIndex, String filedOrder, Int32& recordCount)
+   在 BD.Inventory.Bll.InvCheckBll.GetDetail(String bill_code, Int32 pageSize, Int32 pageIndex, String filedOrder, Int32& recordCount) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Bll\InvCheckBll.cs:行号 53
+   在 BD.Inventory.WebApi.Controllers.PC.InvCheckController.SelDetail(String bill_code, Int32 pageIndex, Int32 pageSize) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\Controllers\PC\InvCheckController.cs:行号 80
+ClientConnectionId:5bb12af2-86bf-4249-8815-d78163ac8a86
+Error Number:137,State:2,Class:15
