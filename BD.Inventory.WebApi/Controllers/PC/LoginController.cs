@@ -42,94 +42,113 @@ namespace BD.Inventory.WebApi.Controllers.PC
 
             try
             {
+                
                 AccountUser model = user_instance.CheckAccount(userNo, passWord, out string msg);
 
                 if (model != null)
                 {
-                    AccountGroup group = group_instance.GetModelByID(Convert.ToDecimal(model.GroupNo));
-                    // 获取该用户的PC授权菜单
-                    List<Menu> menuListPC = new List<Menu>();
-
-                    // 获取该用户的SC授权菜单
-                    List<Menu> menuListSC = new List<Menu>();
-
-                    if (group != null)
+                    // 验证密码
+                    bool isValid_password = BCrypt.Net.BCrypt.Verify(passWord, model.PassWord);
+                    if (isValid_password)
                     {
-                        //根据用户组菜单获取菜单集合
-
-                        // PC授权菜单
-                        string[] menuPC = group.GroupMenuPC.Trim().Split(',');
-                        string strMenuPC = "";
-                        // PC菜单中的增删改查
-                        string[] menuZSGC = group.GroupZSGC.Trim().Split(',');
-                        string strMenuZSGC = "";
-
-                        // SC授权菜单
-                        string[] menuSC = group.GroupMenuSC.Trim().Split(',');
-                        string strMenuSC = "";
-
-                        foreach (var item in menuPC)
+                        if (string.IsNullOrEmpty(model.GroupNo))
                         {
-                            if (string.IsNullOrEmpty(strMenuPC))
-                            {
-                                strMenuPC = "'" + item + "'";
-                            }
-                            else
-                            {
-                                strMenuPC += ",'" + item + "'";
-                            }
+                            msg = "该账户未设置权限！";
+                            return JsonHelper.FailJson(msg);
                         }
-                        foreach (var item in menuZSGC)
+                        AccountGroup group = group_instance.GetModelByID(Convert.ToDecimal(model.GroupNo));
+                        // 获取该用户的PC授权菜单
+                        List<Menu> menuListPC = new List<Menu>();
+
+                        // 获取该用户的SC授权菜单
+                        List<Menu> menuListSC = new List<Menu>();
+
+                        if (group != null)
                         {
-                            if (string.IsNullOrEmpty(strMenuZSGC))
-                            {
-                                strMenuZSGC = "'" + item + "'";
-                            }
-                            else
-                            {
-                                strMenuZSGC += ",'" + item + "'";
-                            }
-                        }
+                            //根据用户组菜单获取菜单集合
 
-                        foreach (var item in menuSC)
+                            // PC授权菜单
+                            string[] menuPC = group.GroupMenuPC.Trim().Split(',');
+                            string strMenuPC = "";
+                            // PC菜单中的增删改查
+                            string[] menuZSGC = group.GroupZSGC.Trim().Split(',');
+                            string strMenuZSGC = "";
+
+                            // SC授权菜单
+                            string[] menuSC = group.GroupMenuSC.Trim().Split(',');
+                            string strMenuSC = "";
+
+                            foreach (var item in menuPC)
+                            {
+                                if (string.IsNullOrEmpty(strMenuPC))
+                                {
+                                    strMenuPC = "'" + item + "'";
+                                }
+                                else
+                                {
+                                    strMenuPC += ",'" + item + "'";
+                                }
+                            }
+                            foreach (var item in menuZSGC)
+                            {
+                                if (string.IsNullOrEmpty(strMenuZSGC))
+                                {
+                                    strMenuZSGC = "'" + item + "'";
+                                }
+                                else
+                                {
+                                    strMenuZSGC += ",'" + item + "'";
+                                }
+                            }
+
+                            foreach (var item in menuSC)
+                            {
+                                if (string.IsNullOrEmpty(strMenuSC))
+                                {
+                                    strMenuSC = "'" + item + "'";
+                                }
+                                else
+                                {
+                                    strMenuSC += ",'" + item + "'";
+                                }
+                            }
+
+                            menuListPC = menu_instance.GetListByMenuName(strMenuPC, strMenuZSGC);
+
+                            menuListSC = menu_instance.GetListSCByMenuName(strMenuSC);
+
+                        }
+                        else
                         {
-                            if (string.IsNullOrEmpty(strMenuSC))
-                            {
-                                strMenuSC = "'" + item + "'";
-                            }
-                            else
-                            {
-                                strMenuSC += ",'" + item + "'";
-                            }
+                            LogHelper.LogWarn(playload, Constant.ActionEnum.Login, "该用户未设置权限");
                         }
+                        //生成token
+                        //设置过期时间 
+                        double seconds = 43200; // 过期秒数(12小时)
+                        double exp = (DateTime.UtcNow.AddSeconds(seconds) - new DateTime(1970, 1, 1)).TotalSeconds;
 
-                        menuListPC = menu_instance.GetListByMenuName(strMenuPC, strMenuZSGC);
+                        playload = new JWTPlayloadInfo
+                        {
+                            UserNo = model.UserNo,
+                            UserName = model.UserName,
+                            GroupNo = model.GroupNo,
+                            LoginIP = Utils.GetClientIP(),
+                            exp = exp
+                        };
+                        var token = JWTHelper.GetToken(playload);
 
-                        menuListSC = menu_instance.GetListSCByMenuName(strMenuSC);
+                        // 添加日志
+                        LogHelper.LogAction(playload, Constant.ActionEnum.Login, "PC端-用户登录");
+                        return JsonHelper.SuccessLogin("登录成功！", JsonHelper.ModelToJObject(model), menu_instance.GetTreeJson(menuListPC), menu_instance.GetTreeJson(menuListSC), token);
 
                     }
                     else
                     {
-                        LogHelper.LogWarn(playload, Constant.ActionEnum.Login, "该用户未设置权限");
+                        msg = "密码错误！";
+                        return JsonHelper.FailJson(msg);
                     }
-                    //生成token
-                    //设置过期时间 
-                    double seconds = 43200; // 过期秒数(12小时)
-                    double exp = (DateTime.UtcNow.AddSeconds(seconds) - new DateTime(1970, 1, 1)).TotalSeconds;
 
-                    playload = new JWTPlayloadInfo
-                    {
-                        UserNo = model.UserNo,
-                        UserName = model.UserName,
-                        GroupNo = model.GroupNo,
-                        LoginIP = Utils.GetClientIP(),
-                        exp = exp
-                    };
-                    var token = JWTHelper.GetToken(playload);
-
-                    // 添加日志
-                    LogHelper.LogAction(playload, Constant.ActionEnum.Login, "PC端-用户登录");
-                    return JsonHelper.SuccessLogin("登录成功！", JsonHelper.ModelToJObject(model), menu_instance.GetTreeJson(menuListPC), menu_instance.GetTreeJson(menuListSC), token);
+                    
                 }
                 else
                 {

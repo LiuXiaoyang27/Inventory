@@ -127,6 +127,14 @@ namespace BD.Inventory.WebApi.Controllers.PC
                 {
                     model.CreateName = playload.UserName;
                     model.CreateDate = DateTime.Now;
+                    // 初始密码
+                    string initPassword = model.PassWord;
+                    // 随机盐值
+                    // 设置计算成本 BCrypt的计算成本是一个对数值，表示为2的幂次。例如，如果计算成本为10，则实际的迭代次数是2的10次幂，1024次
+                    int cost = 5;
+                    string salt = BCrypt.Net.BCrypt.GenerateSalt(cost);
+                    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(initPassword, salt);
+                    model.PassWord = hashedPassword;
                     int res = _instance.AddUser(model);
                     if (res > 0)
                     {

@@ -43,33 +43,15 @@ namespace BD.Inventory.Bll
 
             AccountUser model = GetLoginModel(userAccount);
 
-            if (model != null)
-            {
-                //string md5Password = Common.Utils.MD5(password);
-                if (password.Equals(model.PassWord))
-                {
-                    if (string.IsNullOrEmpty(model.GroupNo))
-                    {
-                        msg = "该账户未设置权限！";
-                        return null;
-                    }
-                    else
-                    {
-                        msg = "OK";
-                        return model;
-                    }
-                }
-                else
-                {
-                    msg = "密码错误！";
-                    return null;
-                }
-
-            }
-            else
+            if (model == null)
             {
                 msg = "用户不存在！";
                 return null;
+            }
+            else
+            {
+                msg = "OK！";
+                return model;
             }
         }
 

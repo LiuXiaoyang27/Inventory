@@ -1,0 +1,1 @@
+2024-08-02 10:12:20,153 [9] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
