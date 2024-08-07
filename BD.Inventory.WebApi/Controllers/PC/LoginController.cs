@@ -5,7 +5,6 @@ using BD.Inventory.WebApi.App_Start;
 using BD.Inventory.WebApi.Common;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace BD.Inventory.WebApi.Controllers.PC
@@ -36,13 +35,13 @@ namespace BD.Inventory.WebApi.Controllers.PC
         /// <param name="passWord">密码</param>
         /// <returns></returns>
         [HttpGet]
-        public HttpResponseMessage Login(string userNo, string passWord)
+        public IHttpActionResult Login(string userNo, string passWord)
         {
             JWTPlayloadInfo playload = new JWTPlayloadInfo();
 
             try
             {
-                
+
                 AccountUser model = user_instance.CheckAccount(userNo, passWord, out string msg);
 
                 if (model != null)
@@ -54,7 +53,7 @@ namespace BD.Inventory.WebApi.Controllers.PC
                         if (string.IsNullOrEmpty(model.GroupNo))
                         {
                             msg = "该账户未设置权限！";
-                            return JsonHelper.FailJson(msg);
+                            return JsonHelper1.FailJson(this, msg);
                         }
                         AccountGroup group = group_instance.GetModelByID(Convert.ToDecimal(model.GroupNo));
                         // 获取该用户的PC授权菜单
@@ -139,27 +138,28 @@ namespace BD.Inventory.WebApi.Controllers.PC
 
                         // 添加日志
                         LogHelper.LogAction(playload, Constant.ActionEnum.Login, "PC端-用户登录");
-                        return JsonHelper.SuccessLogin("登录成功！", JsonHelper.ModelToJObject(model), menu_instance.GetTreeJson(menuListPC), menu_instance.GetTreeJson(menuListSC), token);
+                        //return JsonHelper.SuccessLogin("登录成功！", JsonHelper.ModelToJObject(model), menu_instance.GetTreeJson(menuListPC), menu_instance.GetTreeJson(menuListSC), token);
+                        return JsonHelper1.SuccessLogin(this, "登录成功！", JsonHelper.ModelToJObject(model), menu_instance.GetTreeJson(menuListPC), menu_instance.GetTreeJson(menuListSC), token);
 
                     }
                     else
                     {
                         msg = "密码错误！";
-                        return JsonHelper.FailJson(msg);
+                        return JsonHelper1.FailJson(this, msg);
                     }
 
-                    
+
                 }
                 else
                 {
-                    return JsonHelper.FailJson(msg);
+                    return JsonHelper1.FailJson(this, msg);
                 }
             }
             catch (Exception ex)
             {
                 // 异常日志
                 LogHelper.LogError(playload, ex, Constant.ActionEnum.Login, "PC端-用户登录");
-                return JsonHelper.ErrorJson(ex.Message);
+                return JsonHelper1.ErrorJson(this, ex.Message);
             }
 
         }

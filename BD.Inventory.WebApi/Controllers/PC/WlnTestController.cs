@@ -3,7 +3,10 @@ using BD.Inventory.Entities;
 using BD.Inventory.WebApi.App_Start;
 using BD.Inventory.WebApi.WLNoperation;
 using BD.Inventory.WebApi.WLNoperation.Models;
+using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -12,7 +15,13 @@ namespace BD.Inventory.WebApi.Controllers.PC
     [ControllerGroup("WlnTest", "PC端-万里牛测试")]
     public class WlnTestController : ApiController
     {
-        WlnPublic wlnpu = new WlnPublic();
+        private readonly WlnPublic wlnpu;
+
+        public WlnTestController()
+        {
+            wlnpu = new WlnPublic();
+        }
+
         /// <summary>
         /// 查询商品
         /// </summary>
@@ -68,11 +77,36 @@ namespace BD.Inventory.WebApi.Controllers.PC
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<HttpResponseMessage> GoodsInsert()
+        public async Task<IHttpActionResult> GoodsInsert()
         {
-            InsertGoodsResult i = new InsertGoodsResult { goods_insert_count = 0, spec_insert_count = 0 };
-            await wlnpu.ImportGoods(i);
-            return JsonHelper.SuccessJson(JsonHelper.ModelToJObject(i));
+            try
+            {
+                Stopwatch stopwatch = new Stopwatch();
+
+                // 开始计时
+                stopwatch.Start();
+                InsertGoodsResult i = new InsertGoodsResult { goods_insert_count = 0, spec_insert_count = 0 };
+                //await wlnpu.ImportGoods(i);
+                //return JsonHelper.SuccessJson(JsonHelper.ModelToJObject(i));
+                var importGoodsTask = Task.Run(() => wlnpu.ImportGoods(i));
+                await importGoodsTask;
+                stopwatch.Stop();
+                // 转换为分钟
+                double executionTimeInMinutes = stopwatch.Elapsed.TotalMinutes;
+                var result = new JObject
+                {
+                    ["status"] = 200,
+                    ["msg"] = $"共用时{executionTimeInMinutes}分钟。",
+                    ["data"] = JToken.FromObject(JsonHelper.ModelToJObject(i))
+                };
+
+                return Ok(result);
+            }
+            catch (System.Exception ex)
+            {
+                return Content(System.Net.HttpStatusCode.InternalServerError, new JObject { ["status"] = 500, ["msg"] = ex.Message });
+            }
+
         }
 
         /// <summary>
@@ -80,11 +114,36 @@ namespace BD.Inventory.WebApi.Controllers.PC
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<HttpResponseMessage> InsertCheckBillInfo()
+        public async Task<IHttpActionResult> InsertCheckBillInfo()
         {
-            InsertCheckBillResult i = new InsertCheckBillResult { check_bill_head_insert_count = 0, check_bill_body_insert_count = 0, storage_insert_count = 0 };
-            await wlnpu.ImportCheckBillAndStorage(i);
-            return JsonHelper.SuccessJson(JsonHelper.ModelToJObject(i));
+            try
+            {
+                Stopwatch stopwatch = new Stopwatch();
+
+                // 开始计时
+                stopwatch.Start();
+                InsertCheckBillResult i = new InsertCheckBillResult { check_bill_head_insert_count = 0, check_bill_body_insert_count = 0, storage_insert_count = 0 };
+                //await wlnpu.ImportCheckBillAndStorage(i);
+                var importCheckBillAndStorageTask = Task.Run(() => wlnpu.ImportCheckBillAndStorage(i));
+                await importCheckBillAndStorageTask;
+                stopwatch.Stop();
+                // 转换为分钟
+                double executionTimeInMinutes = stopwatch.Elapsed.TotalMinutes;
+                //return JsonHelper.SuccessJson(JsonHelper.ModelToJObject(i));
+                var result = new JObject
+                {
+                    ["status"] = 200,
+                    ["msg"] = $"共用时{executionTimeInMinutes}分钟。",
+                    ["data"] = JToken.FromObject(JsonHelper.ModelToJObject(i))
+                };
+
+                return Ok(result);
+            }
+            catch (System.Exception ex)
+            {
+                return Content(System.Net.HttpStatusCode.InternalServerError, new JObject { ["status"] = 500, ["msg"] = ex.Message });
+            }
+
         }
     }
 }
