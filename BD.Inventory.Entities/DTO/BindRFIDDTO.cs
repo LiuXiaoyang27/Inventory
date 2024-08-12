@@ -1,4 +1,6 @@
-﻿namespace BD.Inventory.Entities.DTO
+﻿using System.Collections.Generic;
+
+namespace BD.Inventory.Entities.DTO
 {
     public class BindRFIDDTO
     {
@@ -28,6 +30,11 @@
         /// Nullable:True
         /// </summary>           
         public string RFID { get; set; }
+
+        /// <summary>
+        /// RFID集合
+        /// </summary>
+        public List<string> RFIDs { get; set; }
 
 
     }

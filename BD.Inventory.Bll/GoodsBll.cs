@@ -65,6 +65,16 @@ namespace BD.Inventory.Bll
         }
 
         /// <summary>
+        /// 条码绑定(批量绑定)
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public int BindingCodeBatch(BindRFIDDTO model)
+        {
+            return DalInstance.BindingCodeBatch(model);
+        }
+
+        /// <summary>
         /// 删除详情
         /// </summary>
         /// <param name="id"></param>

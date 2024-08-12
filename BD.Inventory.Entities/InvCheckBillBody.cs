@@ -92,7 +92,7 @@ namespace BD.Inventory.Entities
         /// Default:
         /// Nullable:True
         /// </summary>           
-        public int? index { get; set; }
+        public long? index { get; set; }
 
         /// <summary>
         /// Desc:库存类型 正品 ZP 次品 CC

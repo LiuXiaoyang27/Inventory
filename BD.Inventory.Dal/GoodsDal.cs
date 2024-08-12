@@ -127,19 +127,49 @@ namespace BD.Inventory.Dal
         }
 
         /// <summary>
+        /// 条码绑定(批量绑定)
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public int BindingCodeBatch(BindRFIDDTO model)
+        {
+
+            string connectionString = SqlHelper.connectionString;
+            int result = 0;
+
+            Action<SqlConnection, SqlTransaction> sqlAction = (connection, transaction) =>
+            {
+                foreach (var RFID in model.RFIDs)
+                {
+                    
+                    if (!RFIDExists(RFID, connection, transaction))
+                    {
+                        model.RFID = RFID;
+                        result += InsertRFID(model, connection, transaction);
+                    }
+
+                }
+
+            };
+
+            SqlHelper.ExecuteTransaction(sqlAction, connectionString);
+
+            return result;
+        }
+
+        /// <summary>
         /// 查询数据是否存在
         /// </summary>
         /// <param name="sys_goods_uid"></param>
         /// <param name="connection"></param>
         /// <param name="transaction"></param>
         /// <returns></returns>
-        private bool RFIDExists(string goods_code, string spec_code, SqlConnection connection, SqlTransaction transaction)
+        private bool RFIDExists(string RFID, SqlConnection connection, SqlTransaction transaction)
         {
-            string query = $"SELECT COUNT(1) FROM {table3} WHERE goods_code = @goods_code AND spec_code = @spec_code";
+            string query = $"SELECT COUNT(1) FROM {table3} WHERE RFID = @RFID";
             using (SqlCommand command = new SqlCommand(query, connection, transaction))
             {
-                command.Parameters.AddWithValue("@goods_code", goods_code);
-                command.Parameters.AddWithValue("@spec_code", spec_code);
+                command.Parameters.AddWithValue("@RFID", RFID);
                 return (int)command.ExecuteScalar() > 0;
             }
         }

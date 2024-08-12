@@ -201,5 +201,58 @@ namespace BD.Inventory.WebApi.Controllers.PC
             }
         }
 
+        /// <summary>
+        /// 条码绑定(批量绑定)
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public IHttpActionResult BindingCodeBatch([FromBody] BindRFIDDTO model)
+        {
+            playload = (JWTPlayloadInfo)Request.Properties["playload"];
+            try
+            {
+                if (string.IsNullOrEmpty(model.goods_code))
+                {
+                    return JsonHelper1.ErrorJson(this, "商品编码不能为空");
+                }
+                if (string.IsNullOrEmpty(model.spec_code))
+                {
+                    return JsonHelper1.ErrorJson(this, "规格编码不能为空");
+                }
+                if (string.IsNullOrEmpty(model.barcode))
+                {
+                    return JsonHelper1.ErrorJson(this, "商品条码不能为空");
+                }
+                if (model.RFIDs == null || model.RFIDs.Count == 0)
+                {
+                    return JsonHelper1.ErrorJson(this, "绑定RFID不能为空");
+                }
+                HashSet<string> scannedRFIDsSet = new HashSet<string>(model.RFIDs);
+                model.RFIDs = scannedRFIDsSet.ToList();
+                int res = _instance.BindingCodeBatch(model);
+                if (res > 0)
+                {
+                    string msg = $"条码绑定,商品编码：{model.goods_code},规格编码：{ model.spec_code},绑定{ res}条数据";
+                    LogHelper.LogAction(playload, Constant.ActionEnum.Add, msg);
+                    return JsonHelper1.SuccessJson(this, "绑定成功");
+                }
+                else
+                {
+                    string msg = $"条码绑定,商品编码：{model.goods_code},规格编码：{ model.spec_code}";
+                    LogHelper.LogWarn(playload, Constant.ActionEnum.Add, msg);
+                    return JsonHelper1.FailJson(this, "绑定失败");
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string msg = $"条码绑定,商品编码：{model.goods_code},规格编码：{ model.spec_code}";
+                LogHelper.LogError(playload, ex, Constant.ActionEnum.Add, msg);
+                return JsonHelper1.ErrorJson(this, ex.Message);
+            }
+        }
+
     }
 }
