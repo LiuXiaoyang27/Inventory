@@ -35,6 +35,29 @@ namespace BD.Inventory.WebApi.Controllers.PC
         }
 
         /// <summary>
+        /// 生成盘点单号
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public HttpResponseMessage InventoryNumberGenerator()
+        {
+            playload = (JWTPlayloadInfo)Request.Properties["playload"];
+            try
+            {
+                
+
+                var number = _instance.InventoryNumberGenerator();
+                
+                return JsonHelper.SuccessJson("Success",number);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.LogError(playload, ex, Constant.ActionEnum.Show, "生成盘点单号");
+                return JsonHelper.ErrorJson(ex.Message);
+            }
+        }
+
+        /// <summary>
         /// 分页查询
         /// </summary>
         /// <param name="pageIndex">当前页</param>
@@ -93,6 +116,7 @@ namespace BD.Inventory.WebApi.Controllers.PC
 
         }
 
+        #region 添加增量盘点单
         /// <summary>
         /// 同步盘点单数据
         /// </summary>
@@ -148,6 +172,58 @@ namespace BD.Inventory.WebApi.Controllers.PC
             }
 
         }
+        #endregion
+
+        /// <summary>
+        /// 新增盘点单
+        /// </summary>
+        /// <param name="bar_code">商品条码</param>
+        /// <param name="sku_code">规格编码</param>
+        /// <param name="storage_code">目标仓库编码</param>
+        /// <param name="storage_name">仓库名称</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetInvInfoTest(string bar_code = "", string sku_code = "", string storage_code = "", string storage_name = "")
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(storage_code))
+                {
+                    return JsonHelper.ErrorJson("仓库编码不能为空！");
+                }
+
+                Param_InvInfo param = new Param_InvInfo();
+                param.article_number = "";
+                param.bar_code = bar_code;
+                param.sku_code = sku_code;
+                param.storage_code = storage_code;
+                param.storage_name = storage_name;
+
+                if (string.IsNullOrEmpty(param.article_number) && string.IsNullOrEmpty(param.bar_code) && string.IsNullOrEmpty(param.sku_code))
+                {
+                    // 根据modify_time 查询
+                    param.modify_time = "2003-12-10 13:45:17";
+                    List<InvInfo> res = await wlnpu.GetGoodsInvInfobyModifyTime(param);
+                    return JsonHelper.SuccessJson(JsonHelper.ListToJArray(res));
+                }
+                else
+                {
+                    InvInfo res = await wlnpu.GetGoodsInvInfobySku(param);
+                    return JsonHelper.SuccessJson(JsonHelper.ModelToJObject(res));
+                }
+
+                //await wlnpu.ImportGoods(i);
+                //return JsonHelper.SuccessJson(JsonHelper.ModelToJObject(i));
+
+
+
+            }
+            catch (System.Exception ex)
+            {
+                return JsonHelper.ErrorJson(ex.Message);
+            }
+
+        }     
 
         /// <summary>
         /// 获取系统同步时间

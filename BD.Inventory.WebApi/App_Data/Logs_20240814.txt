@@ -1,0 +1,80 @@
+2024-08-14 10:17:52,063 [8] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Net.Http.HttpRequestException: 发送请求时出错。 ---> System.Net.WebException: 无法连接到远程服务器 ---> System.Net.Sockets.SocketException: 由于目标计算机积极拒绝，无法连接。 127.0.0.1:7890
+   在 System.Net.Sockets.Socket.InternalEndConnect(IAsyncResult asyncResult)
+   在 System.Net.Sockets.Socket.EndConnect(IAsyncResult asyncResult)
+   在 System.Net.ServicePoint.ConnectSocketInternal(Boolean connectFailure, Socket s4, Socket s6, Socket& socket, IPAddress& address, ConnectSocketState state, IAsyncResult asyncResult, Exception& exception)
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Net.HttpWebRequest.EndGetRequestStream(IAsyncResult asyncResult, TransportContext& context)
+   在 System.Net.Http.HttpClientHandler.GetRequestStreamCallback(IAsyncResult ar)
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   在 System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   在 System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<GetStorageInfo>d__10.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 366
+2024-08-14 11:42:28,860 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-14 11:42:40,467 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-14 11:43:43,966 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-14 13:08:27,579 [101] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-14 13:09:02,373 [101] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-14 13:09:22,307 [101] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-14 13:11:43,649 [101] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-14 14:31:24,452 [8] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+Newtonsoft.Json.JsonReaderException: Unexpected character encountered while parsing value: 1. Path 'data[33].batchs[0].produce_date', line 1, position 7348.
+   在 Newtonsoft.Json.JsonTextReader.ReadStringValue(ReadType readType)
+   在 Newtonsoft.Json.JsonTextReader.ReadAsDateTime()
+   在 Newtonsoft.Json.JsonReader.ReadForType(JsonContract contract, Boolean hasConverter)
+   在 Newtonsoft.Json.Serialization.JsonSerializerInternalReader.PopulateObject(Object newObject, JsonReader reader, JsonObjectContract contract, JsonProperty member, String id)
+   在 Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateObject(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)
+   在 Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateValueInternal(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)
+   在 Newtonsoft.Json.Serialization.JsonSerializerInternalReader.PopulateList(IList list, JsonReader reader, JsonArrayContract contract, JsonProperty containerProperty, String id)
+   在 Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateList(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, Object existingValue, String id)
+   在 Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateValueInternal(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)
+   在 Newtonsoft.Json.Serialization.JsonSerializerInternalReader.SetPropertyValue(JsonProperty property, JsonConverter propertyConverter, JsonContainerContract containerContract, JsonProperty containerProperty, JsonReader reader, Object target)
+   在 Newtonsoft.Json.Serialization.JsonSerializerInternalReader.PopulateObject(Object newObject, JsonReader reader, JsonObjectContract contract, JsonProperty member, String id)
+   在 Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateObject(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)
+   在 Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateValueInternal(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)
+   在 Newtonsoft.Json.Serialization.JsonSerializerInternalReader.PopulateList(IList list, JsonReader reader, JsonArrayContract contract, JsonProperty containerProperty, String id)
+   在 Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateList(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, Object existingValue, String id)
+   在 Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateValueInternal(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)
+   在 Newtonsoft.Json.Serialization.JsonSerializerInternalReader.SetPropertyValue(JsonProperty property, JsonConverter propertyConverter, JsonContainerContract containerContract, JsonProperty containerProperty, JsonReader reader, Object target)
+   在 Newtonsoft.Json.Serialization.JsonSerializerInternalReader.PopulateObject(Object newObject, JsonReader reader, JsonObjectContract contract, JsonProperty member, String id)
+   在 Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateObject(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)
+   在 Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateValueInternal(JsonReader reader, Type objectType, JsonContract contract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerMember, Object existingValue)
+   在 Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize(JsonReader reader, Type objectType, Boolean checkAdditionalContent)
+   在 Newtonsoft.Json.JsonSerializer.DeserializeInternal(JsonReader reader, Type objectType)
+   在 Newtonsoft.Json.JsonConvert.DeserializeObject(String value, Type type, JsonSerializerSettings settings)
+   在 Newtonsoft.Json.JsonConvert.DeserializeObject[T](String value, JsonSerializerSettings settings)
+   在 Newtonsoft.Json.JsonConvert.DeserializeObject[T](String value)
+   在 BD.Inventory.WebApi.WLNoperation.WlnPublic.<GetGoodsInvInfo>d__9.MoveNext() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\WLNoperation\WlnPublic.cs:行号 318
+2024-08-14 15:04:16,671 [24] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-14 15:06:21,733 [59] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-14 15:12:11,232 [20] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-14 15:14:05,616 [19] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-14 15:15:53,068 [19] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-14 15:51:09,935 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-14 16:42:34,757 [29] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-14 16:43:50,756 [8] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.InvalidCastException: 指定的转换无效。
+   在 BD.Inventory.Dal.InvCheckDal.<>c__DisplayClass9_0.<InventoryNumberGenerator>b__0(SqlConnection connection, SqlTransaction transaction) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Dal\InvCheckDal.cs:行号 74
+   在 BD.Inventory.DBUtility.SqlHelper.ExecuteTransaction(Action`2 sqlAction, String connectionString) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.DBUtility\SqlHelper.cs:行号 277
+   在 BD.Inventory.Dal.InvCheckDal.InventoryNumberGenerator() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Dal\InvCheckDal.cs:行号 98
+   在 BD.Inventory.Bll.InvCheckBll.InventoryNumberGenerator() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Bll\InvCheckBll.cs:行号 37
+   在 BD.Inventory.WebApi.Controllers.PC.InvCheckController.InventoryNumberGenerator() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\Controllers\PC\InvCheckController.cs:行号 49
+2024-08-14 16:45:40,197 [8] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.InvalidCastException: 指定的转换无效。
+   在 BD.Inventory.Dal.InvCheckDal.<>c__DisplayClass9_0.<InventoryNumberGenerator>b__0(SqlConnection connection, SqlTransaction transaction) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Dal\InvCheckDal.cs:行号 74
+   在 BD.Inventory.DBUtility.SqlHelper.ExecuteTransaction(Action`2 sqlAction, String connectionString) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.DBUtility\SqlHelper.cs:行号 277
+   在 BD.Inventory.Dal.InvCheckDal.InventoryNumberGenerator() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Dal\InvCheckDal.cs:行号 98
+   在 BD.Inventory.Bll.InvCheckBll.InventoryNumberGenerator() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Bll\InvCheckBll.cs:行号 37
+   在 BD.Inventory.WebApi.Controllers.PC.InvCheckController.InventoryNumberGenerator() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\Controllers\PC\InvCheckController.cs:行号 49
+2024-08-14 16:46:14,875 [8] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.IndexOutOfRangeException: LastGeneratedTimestamp
+   在 System.Data.ProviderBase.FieldNameLookup.GetOrdinal(String fieldName)
+   在 System.Data.SqlClient.SqlDataReader.GetOrdinal(String name)
+   在 System.Data.SqlClient.SqlDataReader.get_Item(String name)
+   在 BD.Inventory.Dal.InvCheckDal.<>c__DisplayClass9_0.<InventoryNumberGenerator>b__0(SqlConnection connection, SqlTransaction transaction)
+   在 BD.Inventory.DBUtility.SqlHelper.ExecuteTransaction(Action`2 sqlAction, String connectionString) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.DBUtility\SqlHelper.cs:行号 277
+   在 BD.Inventory.Dal.InvCheckDal.InventoryNumberGenerator()
+   在 BD.Inventory.Bll.InvCheckBll.InventoryNumberGenerator() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Bll\InvCheckBll.cs:行号 37
+   在 BD.Inventory.WebApi.Controllers.PC.InvCheckController.InventoryNumberGenerator() 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\Controllers\PC\InvCheckController.cs:行号 49
+2024-08-14 16:50:25,002 [19] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent

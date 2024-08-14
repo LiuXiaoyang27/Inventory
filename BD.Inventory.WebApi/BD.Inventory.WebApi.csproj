@@ -162,6 +162,7 @@
     <Compile Include="WLNoperation\Models\Param_Goods.cs" />
     <Compile Include="WLNoperation\Models\Param_InvCheckBill.cs" />
     <Compile Include="WLNoperation\Models\Param_InvCheckBill_Add.cs" />
+    <Compile Include="WLNoperation\Models\Param_InvInfo.cs" />
     <Compile Include="WLNoperation\WlnPublic.cs" />
   </ItemGroup>
   <ItemGroup>

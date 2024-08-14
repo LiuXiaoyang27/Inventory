@@ -47,6 +47,9 @@ namespace BD.Inventory.WebApi.QuartzJob
                 WlnPublic wlnp = new WlnPublic();
                 //var importGoodsTask = Task.Run(() => wlnp.ImportGoods(res));
                 // 拉取仓库，盘点单
+                // TODO 
+                //string create_date = (DateTime.Now-new TimeSpan(3,0,0)).ToString("yyyy-MM-dd HH:mm:ss");
+                //string create_end_date = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm:ss");
                 var importCheckBillAndStorageTask = Task.Run(() => wlnp.ImportCheckBillAndStorage(res1));
                 // 等待所有任务完成
                 //Task.WaitAll(importGoodsTask, importCheckBillAndStorageTask);

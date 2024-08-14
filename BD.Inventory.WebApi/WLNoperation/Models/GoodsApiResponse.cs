@@ -33,4 +33,13 @@ namespace BD.Inventory.WebApi.WLNoperation.Models
         public string data { get; set; }
         public string message { get; set; }
     }
+
+    /// <summary>
+    /// 拉取库存返回对象
+    /// </summary>
+    public class InvInfoApiResponse
+    {
+        public int code { get; set; }
+        public List<InvInfo> data { get; set; }
+    }
 }

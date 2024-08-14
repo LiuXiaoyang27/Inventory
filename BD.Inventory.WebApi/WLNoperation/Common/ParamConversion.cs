@@ -162,5 +162,45 @@ namespace BD.Inventory.WebApi.WLNoperation.Common
 
         }
 
+        /// <summary>
+        /// 将库存信息参数放到字典中
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        public static Dictionary<string, string> ConvertParam_InvInfoToDictionary(Param_InvInfo param)
+        {
+            var parameters = new Dictionary<string, string>();
+
+            // 添加基本属性
+            parameters.Add("page_no", param.page_no.ToString());
+            parameters.Add("page_size", param.page_size.ToString());            
+            if (!string.IsNullOrEmpty(param.article_number))
+            {
+                parameters.Add("article_number", param.article_number.ToString());
+            }
+            if (!string.IsNullOrEmpty(param.bar_code))
+            {
+                parameters.Add("bar_code", param.bar_code);
+            }
+            if (!string.IsNullOrEmpty(param.modify_time))
+            {
+                parameters.Add("modify_time", param.modify_time);
+            }
+
+            if (!string.IsNullOrEmpty(param.sku_code))
+            {
+                parameters.Add("sku_code", param.sku_code);
+            }
+
+            if (!string.IsNullOrEmpty(param.storage_code))
+            {
+                parameters.Add("storage", param.storage_code);
+            }
+
+
+
+            return parameters;
+        }
+
     }
 }

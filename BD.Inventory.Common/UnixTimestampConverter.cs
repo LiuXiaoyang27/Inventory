@@ -7,7 +7,15 @@ namespace BD.Inventory.Common
     {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            if (value is DateTime dateTime)
+            {
+                long unixTimestamp = (long)(dateTime.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds;
+                writer.WriteValue(unixTimestamp);
+            }
+            else
+            {
+                throw new JsonSerializationException("Expected date object value.");
+            }
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace BD.Inventory.WebApi.WLNoperation.Models
+﻿namespace BD.Inventory.WebApi.WLNoperation.Models
 {
     /// <summary>
     /// 商品请求参数

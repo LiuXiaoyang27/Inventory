@@ -578,8 +578,7 @@ namespace BD.Inventory.Common
             return Math.Round(result.Value, digits);
         }
 
-        #endregion 数值转换
-
+        #endregion 数值转换      
 
 
         #region 日期类型处理

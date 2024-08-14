@@ -47,6 +47,64 @@ namespace BD.Inventory.Dal
 
         // ===========================以下为PC端方法====================================
 
+        #region 生成盘点单号
+        /// <summary>
+        /// 生成盘点单号
+        /// </summary>
+        /// <returns></returns>
+        public string InventoryNumberGenerator()
+        {
+            string prefix = "PD";
+            string datePart = DateTime.Now.ToString("yyyyMMdd");
+            int counterValue = 0;
+            DateTime currentDate = DateTime.Today;
+
+            string connectionString = SqlHelper.connectionString;
+            Action<SqlConnection, SqlTransaction> sqlAction = (connection, transaction) =>
+            {
+                // 通过单据编码查询表头仓库
+                SqlCommand selectCommand = new SqlCommand(
+                        "SELECT CurrentCounter, LastGeneratedDate FROM InventoryCounter WHERE Id = 1",
+                        connection,
+                        transaction);
+                using (SqlDataReader reader = selectCommand.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        counterValue = Convert.ToInt32(reader["CurrentCounter"]);
+                        DateTime lastGeneratedTimestamp = (DateTime)reader["LastGeneratedDate"];
+
+                        // 如果新生成的日期不同或者上次时间戳晚于当前时间
+                        if (lastGeneratedTimestamp < currentDate)
+                        {
+                            counterValue = 1; // 仅在日期变化或时间戳异常的情况下重置计数器
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("InventoryCounter record not found.");
+                    }
+                }
+                SqlCommand updateCommand = new SqlCommand(
+                        "UPDATE InventoryCounter SET CurrentCounter = @counter, LastGeneratedDate = @currentDate WHERE Id = 1",
+                        connection,
+                        transaction);
+
+                updateCommand.Parameters.AddWithValue("@counter", counterValue + 1);
+                updateCommand.Parameters.AddWithValue("@currentDate", currentDate);
+                updateCommand.ExecuteNonQuery();
+
+            };
+            SqlHelper.ExecuteTransaction(sqlAction, connectionString);
+
+            string counterPart = counterValue.ToString("D4");
+            string inventoryNumber = $"{prefix}{datePart}{counterPart}";
+
+            return inventoryNumber;
+
+        }
+        #endregion
+
         /// <summary>
         /// 查询盘点单头（分页）
         /// </summary>

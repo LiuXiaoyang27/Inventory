@@ -23,9 +23,20 @@ namespace BD.Inventory.Bll
         private InvCheckBll()
         {
             DalInstance = InvCheckDal.Instance;
-        }      
+        }
 
         // ============================= 以下为PC端方法 ===================================================
+
+        #region 生成盘点单号
+        /// <summary>
+        /// 生成盘点单号
+        /// </summary>
+        /// <returns></returns>
+        public string InventoryNumberGenerator()
+        {
+            return DalInstance.InventoryNumberGenerator();
+        }
+        #endregion
 
         /// <summary>
         /// 查询盘点单头（分页）

@@ -8,6 +8,7 @@ using BD.Inventory.WebApi.Common;
 using BD.Inventory.Entities;
 using BD.Inventory.Common;
 using BD.Inventory.Bll;
+using System.Collections.Generic;
 
 namespace BD.Inventory.WebApi.WLNoperation
 {
@@ -183,7 +184,8 @@ namespace BD.Inventory.WebApi.WLNoperation
 
             param.page = 0;
             param.limit = 100;
-            param.create_time = "2000-01-01";
+            param.create_time = "2010-01-01";
+            //param.create_end_time = create_end_date;
 
             var parameters = ParamConversion.ConvertParam_CheckBillToDictionary(param);
             try
@@ -272,6 +274,166 @@ namespace BD.Inventory.WebApi.WLNoperation
             catch (HttpRequestException e)
             {
                 LogHelper.LogError(playload, e, Constant.ActionEnum.Copy, "添加增量盘点单");
+                throw;
+            }
+
+        }
+
+        /// <summary>
+        /// 指定仓库拉取库存信息（Modifytime查询，循环page）
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<InvInfo>> GetGoodsInvInfobyModifyTime(Param_InvInfo param)
+        {
+            var baseUrl = WlnUtil.GetBase_Url();
+            var path = "/erp/open/inventory/items/get/by/modifytime";
+            var url = $"{baseUrl}{path}";
+
+            var parameters = ParamConversion.ConvertParam_InvInfoToDictionary(param);
+            try
+            {
+                List<InvInfo> resList = new List<InvInfo>();
+                // 当前页（循环用）
+                int pageindex = 0;
+                InvInfoApiResponse res;
+                do
+                {
+                    pageindex++;
+                    res = new InvInfoApiResponse();
+                    parameters["page_no"] = pageindex.ToString();
+                    // 包含签名的参数
+                    var data = WlnUtil.SignParameters(parameters, WlnConfig.appkey, WlnConfig.secret);
+
+                    var content = new FormUrlEncodedContent(data);
+
+                    var response = await Client.PostAsync(url, content);
+                    //if (!response.IsSuccessStatusCode)
+                    //{
+                    //    LogHelper.LogWarn(playload, Constant.ActionEnum.Copy, "拉取商品信息失败");
+                    //    throw new HttpRequestException($"Error: {response.StatusCode}");
+                    //}
+
+                    var responseBody = await response.Content.ReadAsStringAsync();
+                    //dynamic deserializedContent = JsonConvert.DeserializeObject(responseBody);
+                    res = JsonConvert.DeserializeObject<InvInfoApiResponse>(responseBody);
+
+                    if (res != null && res.data != null && res.data.Count > 0)
+                    {
+                        resList.AddRange(res.data);
+                        //_instance.InsertGoodsInfo(res.data, result);
+
+                    }
+
+
+                } while (res != null && res.data != null && res.data.Count > 0);
+
+                resList.ForEach(p => { p.storage_code = param.storage_code; p.storage_name = param.storage_name; });
+
+                LogHelper.LogAction(playload, Constant.ActionEnum.Copy, "拉取商品库存信息");
+                return resList;
+
+
+            }
+            catch (System.Exception e)
+            {
+                LogHelper.LogError(playload, e, Constant.ActionEnum.Copy, "拉取商品库存信息");
+                throw;
+            }
+
+        }
+
+        /// <summary>
+        /// 指定仓库与sku查询库存信息（不需要循环page_no）
+        /// </summary>
+        /// <returns></returns>
+        public async Task<InvInfo> GetGoodsInvInfobySku(Param_InvInfo param)
+        {
+            var baseUrl = WlnUtil.GetBase_Url();
+            var path = "/erp/open/inventory/items/get/by/modifytime";
+            var url = $"{baseUrl}{path}";
+
+            var parameters = ParamConversion.ConvertParam_InvInfoToDictionary(param);
+            try
+            {
+
+                InvInfoApiResponse res = new InvInfoApiResponse();
+                // 包含签名的参数
+                var data = WlnUtil.SignParameters(parameters, WlnConfig.appkey, WlnConfig.secret);
+
+                var content = new FormUrlEncodedContent(data);
+
+                var response = await Client.PostAsync(url, content);
+                //if (!response.IsSuccessStatusCode)
+                //{
+                //    LogHelper.LogWarn(playload, Constant.ActionEnum.Copy, "拉取商品信息失败");
+                //    throw new HttpRequestException($"Error: {response.StatusCode}");
+                //}
+
+                var responseBody = await response.Content.ReadAsStringAsync();
+                //dynamic deserializedContent = JsonConvert.DeserializeObject(responseBody);
+                res = JsonConvert.DeserializeObject<InvInfoApiResponse>(responseBody);
+                InvInfo model = new InvInfo();
+
+                if (res != null && res.data != null && res.data.Count > 0)
+                {
+                    model = res.data[0];
+                }
+
+
+                LogHelper.LogAction(playload, Constant.ActionEnum.Copy, "拉取商品库存信息");
+                return model;
+
+
+            }
+            catch (System.Exception e)
+            {
+                LogHelper.LogError(playload, e, Constant.ActionEnum.Copy, "拉取商品库存信息");
+                throw;
+            }
+
+        }
+
+        /// <summary>
+        /// 拉取仓库信息
+        /// </summary>
+        /// <returns></returns>
+        public async Task<HttpResponseMessage> GetStorageInfo()
+        {
+            var baseUrl = WlnUtil.GetBase_Url();
+            var path = "/erp/base/storage/query";
+            var url = $"{baseUrl}{path}";
+
+            var parameters = new Dictionary<string, string>();
+
+            // 添加基本属性
+            parameters.Add("page_no", "1");
+            parameters.Add("page_size", "100");
+
+            try
+            {
+
+                // 包含签名的参数
+                var data = WlnUtil.SignParameters(parameters, WlnConfig.appkey, WlnConfig.secret);
+
+                var content = new FormUrlEncodedContent(data);
+
+                var response = await Client.PostAsync(url, content);
+                //if (!response.IsSuccessStatusCode)
+                //{
+                //    LogHelper.LogWarn(playload, Constant.ActionEnum.Copy, "拉取商品信息失败");
+                //    throw new HttpRequestException($"Error: {response.StatusCode}");
+                //}
+
+
+
+                LogHelper.LogAction(playload, Constant.ActionEnum.Copy, "拉取商品库存信息");
+                return response;
+
+
+            }
+            catch (System.Exception e)
+            {
+                LogHelper.LogError(playload, e, Constant.ActionEnum.Copy, "拉取商品库存信息");
                 throw;
             }
 

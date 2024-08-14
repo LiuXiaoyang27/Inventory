@@ -52,8 +52,10 @@
     <Compile Include="DTO\InvCheckDTO.cs" />
     <Compile Include="Goods.cs" />
     <Compile Include="InsertResult.cs" />
+    <Compile Include="InvBatchInfo.cs" />
     <Compile Include="InvCheckBillBody.cs" />
     <Compile Include="InvCheckBillHead.cs" />
+    <Compile Include="InvInfo.cs" />
     <Compile Include="JWTPlayloadInfo.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
