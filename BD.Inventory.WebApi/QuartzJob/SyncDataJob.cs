@@ -61,13 +61,13 @@ namespace BD.Inventory.WebApi.QuartzJob
         {
             WlnPublic wlnp = new WlnPublic();
             InvCheckBll _instance = InvCheckBll.Instance;
-            var dt = _instance.SelInvCheckHead(0, 1, "", "t1.create_time", out int records);
+            var dt = _instance.SelInvCheckHead1(0, 1, "", "t1.create_time", out int records);
             List<InvCheckDTO> headList = CommonOperation.ConvertDataTableToModelList<InvCheckDTO>(dt);
             if (headList != null && headList.Count > 0)
             {
                 foreach (var head in headList)
                 {
-                    var dt1 = _instance.GetDetail(head.bill_code, 0, 1, "b.goods_code", out int records1);
+                    var dt1 = _instance.GetDetail1(head.bill_code, 0, 1, "b.goods_code", out int records1);
                     if (records1 > 0)
                     {
                         head.details = CommonOperation.ConvertDataTableToModelList<InvCheckDetailDTO>(dt1);

@@ -48,6 +48,7 @@
     <Compile Include="AccountUser.cs" />
     <Compile Include="DTO\BindRFIDDTO.cs" />
     <Compile Include="DTO\ChooseBillCodeDTO.cs" />
+    <Compile Include="DTO\Param_CreateCheckBillDTO.cs" />
     <Compile Include="DTO\GoodsDTO.cs" />
     <Compile Include="DTO\InvCheckDTO.cs" />
     <Compile Include="Goods.cs" />

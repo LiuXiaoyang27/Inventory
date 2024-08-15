@@ -31,19 +31,6 @@ namespace BD.Inventory.Dal
         private const string table2 = "InvCheckBillBody";
         private const string table3 = "Storage";
 
-        /// <summary>
-        /// 查询数据是否存在
-        /// </summary>
-        /// <param name="strWhere"></param>
-        /// <returns></returns>
-        public bool IsExist(string tableName, string strWhere)
-        {
-            StringBuilder strSql = new StringBuilder();
-            strSql.Append("select count(1) from " + tableName);
-            strSql.Append(" where " + strWhere);
-            return SqlHelper.Exists(strSql.ToString());
-        }
-
 
         // ===========================以下为PC端方法====================================
 
@@ -105,6 +92,110 @@ namespace BD.Inventory.Dal
         }
         #endregion
 
+        #region 创建盘点单
+
+        /// <summary>
+        /// 创建盘点单
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public bool CreateCheckBill(InvCheckBillHead model)
+        {
+            // 主表id
+            string h_next_id = Utils.GetNextID();
+            // 定义主表SQL语句和参数
+            StringBuilder hSql = new StringBuilder();
+            hSql.Append("insert into " + table1 + " (");
+            hSql.Append("id,bill_code,bill_creater,bill_date,create_time,remark,state,storage_code,");
+            hSql.Append("storage_name)");
+            hSql.Append(" OUTPUT inserted.ID values (");
+            hSql.Append("@id,@bill_code,@bill_creater,@bill_date,@create_time,@remark,@state,@storage_code,");
+            hSql.Append("@storage_name)");
+
+            string connectionString = SqlHelper.connectionString;
+            Action<SqlConnection, SqlTransaction> sqlAction = (connection, transaction) =>
+            {
+                using (SqlCommand command1 = new SqlCommand(hSql.ToString(), connection, transaction))
+                {
+                    command1.CommandType = CommandType.Text;
+                    command1.Parameters.AddWithValue("@id", h_next_id);
+                    command1.Parameters.AddWithValue("@bill_code", model.bill_code);
+                    command1.Parameters.AddWithValue("@bill_creater", model.bill_creater);
+                    command1.Parameters.AddWithValue("@bill_date", model.bill_date.HasValue ? (object)model.bill_date.Value : DBNull.Value);
+                    command1.Parameters.AddWithValue("@create_time", model.create_time.HasValue ? (object)model.create_time.Value : DBNull.Value);
+                    command1.Parameters.AddWithValue("@remark", model.remark);
+                    command1.Parameters.AddWithValue("@state", model.state.HasValue ? (object)model.state.Value : DBNull.Value);
+                    command1.Parameters.AddWithValue("@storage_code", model.storage_code);
+                    command1.Parameters.AddWithValue("@storage_name", model.storage_name);
+
+                    command1.Connection = connection; // 确保连接已设置
+
+                    // 执行命令
+                    int result = command1.ExecuteNonQuery();
+                    if (result > 0)
+                    {
+                        model.id = h_next_id;
+                    }
+
+                    // 子表数据
+                    List<InvCheckBillBody> details = model.details;
+                    if (details != null && details.Count > 0)
+                    {
+                        SqlCommand command2;
+
+                        StringBuilder itemSql;
+                        foreach (InvCheckBillBody detail in details)
+                        {
+                            detail.id = Utils.GetNextID();
+                            itemSql = new StringBuilder();
+                            itemSql.Append("insert into " + table2 + "(");
+                            itemSql.Append("id,goods_code,goods_name,bill_code,bar_code,batch_code,batch_date,change_size,expiry_date,[index],inventory_type,nums,price,");
+                            itemSql.Append("product_batch_code,quantity,quantity_start,remark,spec_code,spec_name,stock_type,total_money,unit)");
+                            itemSql.Append(" values (");
+                            itemSql.Append("@id,@goods_code,@goods_name,@bill_code,@bar_code,@batch_code,@batch_date,@change_size,@expiry_date,@index,@inventory_type,@nums,@price,");
+                            itemSql.Append("@product_batch_code,@quantity,@quantity_start,@remark,@spec_code,@spec_name,@stock_type,@total_money,@unit)");
+
+                            using (command2 = new SqlCommand(itemSql.ToString(), connection, transaction))
+                            {
+                                command2.CommandType = CommandType.Text;
+                                command2.Parameters.AddWithValue("@id", detail.id);
+                                command2.Parameters.AddWithValue("@goods_code", detail.goods_code);
+                                command2.Parameters.AddWithValue("@goods_name", detail.goods_name);
+                                command2.Parameters.AddWithValue("@bill_code", detail.bill_code);
+                                command2.Parameters.AddWithValue("@bar_code", detail.bar_code);
+                                command2.Parameters.AddWithValue("@batch_code", detail.batch_code);
+                                command2.Parameters.AddWithValue("@batch_date", detail.batch_date.HasValue ? (object)detail.batch_date.Value : DBNull.Value);
+                                command2.Parameters.AddWithValue("@change_size", detail.change_size.HasValue ? (object)detail.change_size.Value : DBNull.Value);
+                                command2.Parameters.AddWithValue("@expiry_date", detail.expiry_date.HasValue ? (object)detail.expiry_date.Value : DBNull.Value);
+                                command2.Parameters.AddWithValue("@index", detail.index.HasValue ? (object)detail.index.Value : DBNull.Value);
+                                command2.Parameters.AddWithValue("@inventory_type", detail.inventory_type);
+                                command2.Parameters.AddWithValue("@nums", detail.nums.HasValue ? (object)detail.nums.Value : DBNull.Value);
+                                command2.Parameters.AddWithValue("@price", detail.price.HasValue ? (object)detail.price.Value : DBNull.Value);
+                                command2.Parameters.AddWithValue("@product_batch_code", detail.product_batch_code);
+                                command2.Parameters.AddWithValue("@quantity", detail.quantity.HasValue ? (object)detail.quantity.Value : DBNull.Value);
+                                command2.Parameters.AddWithValue("@quantity_start", detail.quantity_start.HasValue ? (object)detail.quantity_start.Value : DBNull.Value);
+                                command2.Parameters.AddWithValue("@remark", detail.remark);
+                                command2.Parameters.AddWithValue("@spec_code", detail.spec_code);
+                                command2.Parameters.AddWithValue("@spec_name", detail.spec_name);
+                                command2.Parameters.AddWithValue("@stock_type", detail.stock_type.HasValue ? (object)detail.stock_type.Value : DBNull.Value);
+                                command2.Parameters.AddWithValue("@total_money", detail.total_money.HasValue ? (object)detail.total_money.Value : DBNull.Value);
+                                command2.Parameters.AddWithValue("@unit", detail.unit);
+
+                                command2.ExecuteNonQuery();
+                            }
+                        }
+                    }
+                }
+            };
+
+            // 调用DatabaseHelper中的静态方法ExecuteTransaction
+            SqlHelper.ExecuteTransaction(sqlAction, connectionString);
+
+            return true;
+        }
+
+        #endregion
+
         /// <summary>
         /// 查询盘点单头（分页）
         /// </summary>
@@ -115,6 +206,130 @@ namespace BD.Inventory.Dal
         /// <param name="recordCount"></param>
         /// <returns></returns>
         public DataTable SelInvCheckHead(int pageSize, int pageIndex, string strWhere, string filedOrder, out int recordCount)
+        {
+            string query = @"select id,bill_code,bill_creater,bill_date,create_time,remark,state,
+                storage_code,storage_name from InvCheckBillHead where is_delete_tag = 0 ";
+            if (!string.IsNullOrEmpty(strWhere))
+            {
+                query += strWhere;
+            }
+            string countSql = PageHelper.CreateCountingSql(query);
+            recordCount = Convert.ToInt32(SqlHelper.GetSingle(countSql));
+            string pageSql = PageHelper.CreatePageSql(recordCount, pageSize, pageIndex, query, filedOrder);
+            DataSet ds = SqlHelper.Query(pageSql);
+            return ds.Tables[0];
+        }
+
+        /// <summary>
+        /// 查询详情（分页）
+        /// </summary>
+        /// <param name="spec_code"></param>
+        /// <returns></returns>
+        public DataTable GetDetail(string strWhere, int pageSize, int pageIndex, string filedOrder, out int recordCount)
+        {
+            string query = @"SELECT 
+                                b.id,
+                                b.goods_code,
+                                b.goods_name,
+                                b.bill_code,
+                                b.spec_code,
+                                b.spec_name,
+                                b.change_size,
+                                b.price,
+                                b.quantity,
+                                b.quantity_start,
+                                b.stock_type,
+                                b.remark,
+                                b.total_money,
+                                b.unit,
+                                b.bar_code
+                            FROM 
+                                InventoryDB.dbo.InvCheckBillBody AS b
+                            WHERE ";
+
+            query += strWhere;
+            string countSql = PageHelper.CreateCountingSql(query);
+            recordCount = Convert.ToInt32(SqlHelper.GetSingle(countSql));
+            string pageSql = PageHelper.CreatePageSql(recordCount, pageSize, pageIndex, query, filedOrder);
+
+            DataSet ds = SqlHelper.Query(pageSql);
+            return ds.Tables[0];
+        }
+
+        /// <summary>
+        /// 批量删除盘点单
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public int DeleteBatch(List<string> bill_code_list, string userName)
+        {
+
+            List<CommandInfo> sqlList = new List<CommandInfo>();
+
+            foreach (string bill_code in bill_code_list)
+            {
+                StringBuilder strSql_b = new StringBuilder();
+                strSql_b.Append(" update " + table1 + " set ");
+                strSql_b.Append("is_delete_tag=1,");
+                strSql_b.Append("delete_user=@user,");
+                strSql_b.Append("delete_time=GETDATE()");
+                strSql_b.Append(" Where bill_code =@bill_code");
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@user",userName),
+                    new SqlParameter("@bill_code",bill_code)
+                };
+                CommandInfo cmd = new CommandInfo(strSql_b.ToString(), parameters);
+                sqlList.Add(cmd);
+
+            }
+            int result = SqlHelper.ExecuteSqlTran(sqlList);
+            return result;
+        }
+
+        /// <summary>
+        /// 批量完成盘点单
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public int Complete(List<string> bill_code_list)
+        {
+            List<CommandInfo> sqlList = new List<CommandInfo>();
+
+            foreach (string bill_code in bill_code_list)
+            {
+                StringBuilder strSql_b = new StringBuilder();
+                strSql_b.Append(" update " + table1 + " set ");
+                strSql_b.Append("state=1");
+                strSql_b.Append(" Where bill_code =@bill_code");
+                SqlParameter[] parameters =
+                {
+                    new SqlParameter("@bill_code",bill_code)
+                };
+                CommandInfo cmd = new CommandInfo(strSql_b.ToString(), parameters);
+                sqlList.Add(cmd);
+
+            }
+            int result = SqlHelper.ExecuteSqlTran(sqlList);
+            return result;
+        }
+
+
+
+        #region 添加增量盘点单相关逻辑（弃用）
+
+        /// <summary>
+        /// 查询盘点单头（分页）
+        /// </summary>
+        /// <param name="pageSize"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="strWhere"></param>
+        /// <param name="filedOrder"></param>
+        /// <param name="recordCount"></param>
+        /// <returns></returns>
+        public DataTable SelInvCheckHead1(int pageSize, int pageIndex, string strWhere, string filedOrder, out int recordCount)
         {
             string query = @"select t1.id,t1.bill_code,t1.bill_creater,t1.bill_date,t1.create_time,t1.remark,t1.state,
                 t1.storage_code,t1.storage_name from InvCheckBillHead t1 Inner Join (
@@ -153,7 +368,7 @@ namespace BD.Inventory.Dal
         /// </summary>
         /// <param name="spec_code"></param>
         /// <returns></returns>
-        public DataTable GetDetail(string bill_code, int pageSize, int pageIndex, string filedOrder, out int recordCount)
+        public DataTable GetDetail1(string bill_code, int pageSize, int pageIndex, string filedOrder, out int recordCount)
         {
             string query = @"SELECT 
                                 b.goods_code,
@@ -255,6 +470,9 @@ namespace BD.Inventory.Dal
         }
 
 
+        #endregion
+
+
         // ===========================以下为手持端方法===================================
 
         /// <summary>
@@ -274,8 +492,9 @@ namespace BD.Inventory.Dal
             return ds.Tables[0];
         }
 
+        #region 查询仓库表 （目前用不到）
         /// <summary>
-        /// 查询仓库
+        /// 查询仓库表 （目前用不到）
         /// </summary>
         /// <returns></returns>
         public DataTable GetStorage(string strWhere)
@@ -290,10 +509,59 @@ namespace BD.Inventory.Dal
             var ds = SqlHelper.Query(sb.ToString());
             return ds.Tables[0];
         }
+        #endregion
 
+        #region 选择单号查询数据
+
+        ///// <summary>
+        ///// 选择单号查询数据 (原逻辑)
+        ///// </summary>
+        ///// <param name="model"></param>
+        ///// <returns></returns>
+        //public ChooseBillCodeDTO SelDataByBillCode1(string bill_code, int pageIndex, int pageSize)
+        //{
+        //    ChooseBillCodeDTO result = new ChooseBillCodeDTO();
+        //    string connectionString = SqlHelper.connectionString;
+
+        //    Action<SqlConnection, SqlTransaction> sqlAction = (connection, transaction) =>
+        //    {
+        //        // 通过单据编码查询表头仓库
+        //        Storage storageModel = GetStorageByBillCode(bill_code, connection, transaction);
+        //        result.storage_code = storageModel.storage_code;
+        //        result.storage_name = storageModel.storage_name;
+        //        // 通过单据编码查询所有待盘点数据
+        //        List<UHFInvCheck> toCheckList = GetBillCheckBody(bill_code, connection, transaction);
+        //        if (toCheckList != null && toCheckList.Count > 0)
+        //        {
+        //            // 查询需要盘点总数
+        //            result.total_num = toCheckList.Count;  //  GetTotalNum(bodyList, connection, transaction);
+        //                                                   // 将所有待盘点数据插入数据库
+        //            foreach (var item in toCheckList)
+        //            {
+        //                if (!UHFInvExists(item.bill_code, item.RFID, connection, transaction))
+        //                {
+        //                    InsertUHFInv(item, storageModel.storage_code, connection, transaction);
+        //                }
+        //            }
+        //        }
+
+        //        // 查询已盘点数量
+        //        result.has_checked_num = GetCheckedNum(bill_code, connection, transaction);
+
+        //        result.currentPage = pageIndex;
+
+        //        // 查询未盘点数据集
+        //        //result.un_check_items = GetUnCheckListOfPage(bill_code, pageSize, pageIndex, connection, transaction);
+        //        GetUnCheckListOfPage(bill_code, result, pageSize, connection, transaction);
+        //    };
+
+        //    SqlHelper.ExecuteTransaction(sqlAction, connectionString);
+
+        //    return result;
+        //}
 
         /// <summary>
-        /// 选择单号查询数据
+        /// 选择单号查询数据 (新逻辑)
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -338,6 +606,52 @@ namespace BD.Inventory.Dal
 
             return result;
         }
+
+        /// <summary>
+        /// 通过单据编码查询表头仓库编号
+        /// </summary>
+        /// <param name="bill_code">单据编码</param>
+        /// <param name="connection"></param>
+        /// <param name="transaction"></param>
+        /// <returns></returns>
+        private Storage GetStorageByBillCode(string bill_code, SqlConnection connection, SqlTransaction transaction)
+        {
+            // 查询表体数据
+            string query = @"select  storage_code,storage_name from " + table1 + " where bill_code=@bill_code";
+            using (SqlCommand command = new SqlCommand(query, connection, transaction))
+            {
+                command.Parameters.AddWithValue("@bill_code", bill_code);
+                // 创建DataSet对象
+                DataSet ds = new DataSet();
+
+                // 执行查询并填充DataSet
+                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                {
+                    adapter.Fill(ds, "InvCheckBillHead");
+                }
+
+                Storage model = CommonOperation.DataTableToModel<Storage>(ds.Tables[0]);
+
+                // 检查DataSet中是否有数据
+                //if (ds.Tables["InvCheckBillHead"].Rows.Count > 0)
+                //{
+                //    // 假设查询结果中有且仅有一条记录，取第一条记录的storage_code字段
+                //    string storage_code = ds.Tables["InvCheckBillHead"].Rows[0]["storage_code"].ToString();
+                //    return storage_code;
+                //}
+                //else
+                //{
+                //    // 如果没有找到记录，可以选择返回null或者抛出异常
+                //    // return null;
+                //    return "";
+                //}
+                return model;
+
+            }
+
+        }
+
+        #endregion
 
         /// <summary>
         /// 通过单据编码查询未盘点数据集(分页)
@@ -391,49 +705,7 @@ namespace BD.Inventory.Dal
         }
 
 
-        /// <summary>
-        /// 通过单据编码查询表头仓库编号
-        /// </summary>
-        /// <param name="bill_code">单据编码</param>
-        /// <param name="connection"></param>
-        /// <param name="transaction"></param>
-        /// <returns></returns>
-        private Storage GetStorageByBillCode(string bill_code, SqlConnection connection, SqlTransaction transaction)
-        {
-            // 查询表体数据
-            string query = @"select  storage_code,storage_name from " + table1 + " where bill_code=@bill_code";
-            using (SqlCommand command = new SqlCommand(query, connection, transaction))
-            {
-                command.Parameters.AddWithValue("@bill_code", bill_code);
-                // 创建DataSet对象
-                DataSet ds = new DataSet();
 
-                // 执行查询并填充DataSet
-                using (SqlDataAdapter adapter = new SqlDataAdapter(command))
-                {
-                    adapter.Fill(ds, "InvCheckBillHead");
-                }
-
-                Storage model = CommonOperation.DataTableToModel<Storage>(ds.Tables[0]);
-
-                // 检查DataSet中是否有数据
-                //if (ds.Tables["InvCheckBillHead"].Rows.Count > 0)
-                //{
-                //    // 假设查询结果中有且仅有一条记录，取第一条记录的storage_code字段
-                //    string storage_code = ds.Tables["InvCheckBillHead"].Rows[0]["storage_code"].ToString();
-                //    return storage_code;
-                //}
-                //else
-                //{
-                //    // 如果没有找到记录，可以选择返回null或者抛出异常
-                //    // return null;
-                //    return "";
-                //}
-                return model;
-
-            }
-
-        }
 
         /// <summary>
         /// 通过单据编码查询所有待盘点数据

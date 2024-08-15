@@ -58,6 +58,11 @@ namespace BD.Inventory.Entities
         public string bill_code { get; set; }
 
         /// <summary>
+        /// 条码
+        /// </summary>
+        public string bar_code { get; set; }
+
+        /// <summary>
         /// Desc:批次号,不返回数据
         /// Default:
         /// Nullable:True
@@ -102,7 +107,7 @@ namespace BD.Inventory.Entities
         public string inventory_type { get; set; }
 
         /// <summary>
-        /// Desc:数量
+        /// Desc:数量（实际为差异数量  盘点后数量-盘点前数量）
         /// Default:
         /// Nullable:True
         /// </summary>           

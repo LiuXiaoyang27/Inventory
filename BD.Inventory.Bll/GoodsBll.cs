@@ -55,6 +55,17 @@ namespace BD.Inventory.Bll
         }
 
         /// <summary>
+        /// 查询商品信息（生成盘点单用）
+        /// </summary>
+        /// <param name="goods_code">商品编码</param>
+        /// <param name="sku_code">规格编码</param>
+        /// <returns></returns>
+        public GoodsDTO GetGoodsDTO(string bar_code)
+        {
+            return DalInstance.GetGoodsDTO(bar_code);
+        }
+
+        /// <summary>
         /// 条码绑定
         /// </summary>
         /// <param name="model"></param>

@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="AccountGroupBll.cs" />
     <Compile Include="AccountUserBll.cs" />
+    <Compile Include="BaseBll.cs" />
     <Compile Include="GoodsBll.cs" />
     <Compile Include="InvCheckBll.cs" />
     <Compile Include="MenuBll.cs" />

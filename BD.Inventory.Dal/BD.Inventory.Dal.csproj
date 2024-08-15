@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="AccountGroupDal.cs" />
     <Compile Include="AccountUserDal.cs" />
+    <Compile Include="BaseDal.cs" />
     <Compile Include="GoodsDal.cs" />
     <Compile Include="InvCheckDal.cs" />
     <Compile Include="MenuDal.cs" />

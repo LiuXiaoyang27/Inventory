@@ -52,14 +52,20 @@ namespace BD.Inventory.Dal
         {
             StringBuilder strSql = new StringBuilder();
 
-            strSql.Append("select t1.sys_goods_uid,t1.goods_code,t1.goods_name,t2.sys_spec_uid,t2.spec_code,t2.spec1,t2.spec2,t2.barcode,");
+            //strSql.Append("select t1.sys_goods_uid,t1.goods_code,t1.goods_name,t2.sys_spec_uid,t2.spec_code,t2.spec1,t2.spec2,t2.barcode,");
+            //strSql.Append("t2.pic,t2.barcodes ");
+            //strSql.Append($"From {table1} t1 left join {table2} t2 ON t1.goods_code=t2.goods_code");
+            //strSql.Append(" where t1.is_delete_tag = 0 ");
+
+            strSql.Append("select count(t3.RFID) as rfidCount,t1.sys_goods_uid,t1.goods_code,t1.goods_name,t1.modify_time,t2.sys_spec_uid,t2.spec_code,t2.spec1,t2.spec2,t2.barcode,");
             strSql.Append("t2.pic,t2.barcodes ");
-            strSql.Append($"From {table1} t1 left join {table2} t2 ON t1.goods_code=t2.goods_code");
+            strSql.Append($"From {table1} t1 left join {table2} t2 ON t1.goods_code=t2.goods_code LEFT JOIN {table3} t3 ON t2.barcode = t3.barcode");
             strSql.Append(" where t1.is_delete_tag = 0 ");
             if (strWhere.Trim() != "")
             {
                 strSql.Append(strWhere);
             }
+            strSql.Append(" GROUP BY t1.sys_goods_uid,t1.goods_code,t1.goods_name,t1.modify_time,t2.sys_spec_uid,t2.spec_code,t2.spec1,t2.spec2,t2.barcode,t2.pic,t2.barcodes");
 
             return strSql;
         }
@@ -95,6 +101,34 @@ namespace BD.Inventory.Dal
             string pageSql = PageHelper.CreatePageSql(recordCount, pageSize, pageIndex, sb.ToString(), filedOrder);
             DataSet ds = SqlHelper.Query(pageSql);
             return ds.Tables[0];
+        }
+
+        /// <summary>
+        /// 查询商品信息（生成盘点单用）
+        /// </summary>
+        /// <param name="goods_code">商品编码</param>
+        /// <param name="sku_code">规格编码</param>
+        /// <returns></returns>
+        public GoodsDTO GetGoodsDTO(string bar_code)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("select t1.goods_code,t1.goods_name,t1.unit_name,t2.spec_code,t2.barcode, ");
+            sb.Append("t2.sale_price,t2.wholesale_price,t2.prime_price ");
+            sb.Append($"from {table1} t1 left join {table2} t2 on t1.goods_code=t2.goods_code ");
+            sb.Append("where t2.barcode=@barcode ");
+            SqlParameter[] parameters =
+            {
+                new SqlParameter("@barcode",bar_code)
+            };
+            DataSet ds = SqlHelper.Query(sb.ToString(), parameters);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                return CommonOperation.DataTableToModel<GoodsDTO>(ds.Tables[0]);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -141,7 +175,7 @@ namespace BD.Inventory.Dal
             {
                 foreach (var RFID in model.RFIDs)
                 {
-                    
+
                     if (!RFIDExists(RFID, connection, transaction))
                     {
                         model.RFID = RFID;

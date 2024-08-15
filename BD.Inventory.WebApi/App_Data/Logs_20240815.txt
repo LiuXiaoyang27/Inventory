@@ -1,0 +1,61 @@
+2024-08-15 09:25:48,655 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-15 09:26:09,061 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-15 09:26:42,082 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-15 10:10:14,534 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-15 10:51:05,489 [6] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-15 10:51:26,404 [5] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Data.SqlClient.SqlException (0x80131904): 选择列表中的列 'Goods.modify_time' 无效，因为该列没有包含在聚合函数或 GROUP BY 子句中。
+   在 BD.Inventory.DBUtility.SqlHelper.Query(String sql, SqlParameter[] parameters) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.DBUtility\SqlHelper.cs:行号 33
+   在 BD.Inventory.Dal.GoodsDal.GetPageList(Int32 pageSize, Int32 pageIndex, String strWhere, String filedOrder, Int32& recordCount) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Dal\GoodsDal.cs:行号 84
+   在 BD.Inventory.Bll.GoodsBll.GetPageList(Int32 pageSize, Int32 pageIndex, String strWhere, String filedOrder, Int32& recordCount) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Bll\GoodsBll.cs:行号 43
+   在 BD.Inventory.WebApi.Controllers.PC.GoodsController.SelGoods(Int32 pageIndex, Int32 pageSize, String goods_code, String goods_name, String spec2, String barcode) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\Controllers\PC\GoodsController.cs:行号 68
+ClientConnectionId:b308a738-6ad9-4c4b-b316-f60339e81bc6
+Error Number:8120,State:1,Class:16
+2024-08-15 12:50:17,022 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-15 13:46:02,383 [5] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-15 13:47:57,689 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-15 13:48:28,494 [7] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-15 13:50:44,858 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-15 13:56:34,634 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-15 13:58:36,227 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-15 13:59:47,253 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-15 14:29:34,137 [11] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-15 14:30:36,845 [9] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Data.SqlClient.SqlException (0x80131904): “.”附近有语法错误。
+   在 BD.Inventory.DBUtility.SqlHelper.GetSingle(String sql, SqlParameter[] parameters) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.DBUtility\SqlHelper.cs:行号 82
+   在 BD.Inventory.Dal.InvCheckDal.GetDetail(String bill_code, Int32 pageSize, Int32 pageIndex, String filedOrder, Int32& recordCount) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Dal\InvCheckDal.cs:行号 256
+   在 BD.Inventory.Bll.InvCheckBll.GetDetail(String bill_code, Int32 pageSize, Int32 pageIndex, String filedOrder, Int32& recordCount) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Bll\InvCheckBll.cs:行号 155
+   在 BD.Inventory.WebApi.Controllers.PC.InvCheckController.SelDetail(String bill_code, Int32 pageIndex, Int32 pageSize) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\Controllers\PC\InvCheckController.cs:行号 114
+ClientConnectionId:19de7781-45f5-4bc1-8a9c-3c8266ee94fc
+Error Number:102,State:1,Class:15
+2024-08-15 14:32:30,448 [9] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Data.SqlClient.SqlException (0x80131904): “.”附近有语法错误。
+   在 BD.Inventory.DBUtility.SqlHelper.GetSingle(String sql, SqlParameter[] parameters) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.DBUtility\SqlHelper.cs:行号 82
+   在 BD.Inventory.Dal.InvCheckDal.GetDetail(String bill_code, Int32 pageSize, Int32 pageIndex, String filedOrder, Int32& recordCount) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Dal\InvCheckDal.cs:行号 256
+   在 BD.Inventory.Bll.InvCheckBll.GetDetail(String bill_code, Int32 pageSize, Int32 pageIndex, String filedOrder, Int32& recordCount) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Bll\InvCheckBll.cs:行号 155
+   在 BD.Inventory.WebApi.Controllers.PC.InvCheckController.SelDetail(String bill_code, Int32 pageIndex, Int32 pageSize) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\Controllers\PC\InvCheckController.cs:行号 114
+ClientConnectionId:19de7781-45f5-4bc1-8a9c-3c8266ee94fc
+Error Number:102,State:1,Class:15
+2024-08-15 15:16:10,454 [7] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Data.SqlClient.SqlException (0x80131904): 列名 'PD202408150007' 无效。
+   在 BD.Inventory.DBUtility.SqlHelper.GetSingle(String sql, SqlParameter[] parameters) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.DBUtility\SqlHelper.cs:行号 82
+   在 BD.Inventory.Dal.InvCheckDal.GetDetail(String strWhere, Int32 pageSize, Int32 pageIndex, String filedOrder, Int32& recordCount) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Dal\InvCheckDal.cs:行号 252
+   在 BD.Inventory.Bll.InvCheckBll.GetDetail(String strWhere, Int32 pageSize, Int32 pageIndex, String filedOrder, Int32& recordCount) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Bll\InvCheckBll.cs:行号 155
+   在 BD.Inventory.WebApi.Controllers.PC.InvCheckController.SelDetail(String bill_code, Int32 pageIndex, Int32 pageSize, String goods_code, String goods_name, String spec_name, String barcode) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\Controllers\PC\InvCheckController.cs:行号 144
+ClientConnectionId:0a2f691e-d6fe-4394-8380-755ea48cd1b1
+Error Number:207,State:1,Class:16
+2024-08-15 15:17:00,720 [6] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Data.SqlClient.SqlException (0x80131904): 列名 'PD202408150007' 无效。
+   在 BD.Inventory.DBUtility.SqlHelper.GetSingle(String sql, SqlParameter[] parameters) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.DBUtility\SqlHelper.cs:行号 82
+   在 BD.Inventory.Dal.InvCheckDal.GetDetail(String strWhere, Int32 pageSize, Int32 pageIndex, String filedOrder, Int32& recordCount) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Dal\InvCheckDal.cs:行号 252
+   在 BD.Inventory.Bll.InvCheckBll.GetDetail(String strWhere, Int32 pageSize, Int32 pageIndex, String filedOrder, Int32& recordCount) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Bll\InvCheckBll.cs:行号 155
+   在 BD.Inventory.WebApi.Controllers.PC.InvCheckController.SelDetail(String bill_code, Int32 pageIndex, Int32 pageSize, String goods_code, String goods_name, String spec_name, String barcode) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\Controllers\PC\InvCheckController.cs:行号 144
+ClientConnectionId:0a2f691e-d6fe-4394-8380-755ea48cd1b1
+Error Number:207,State:1,Class:16
+2024-08-15 15:27:46,855 [42] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-15 16:30:08,786 [7] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-15 16:47:21,385 [5] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-15 16:48:14,005 [6] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-15 16:48:50,394 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-15 16:49:40,311 [7] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-15 16:50:15,695 [7] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent

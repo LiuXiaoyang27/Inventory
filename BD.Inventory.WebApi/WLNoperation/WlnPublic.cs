@@ -286,7 +286,7 @@ namespace BD.Inventory.WebApi.WLNoperation
         public async Task<List<InvInfo>> GetGoodsInvInfobyModifyTime(Param_InvInfo param)
         {
             var baseUrl = WlnUtil.GetBase_Url();
-            var path = "/erp/open/inventory/items/get/by/modifytime";
+            var path = "/erp/open/inventory/items/get/by/modifytimev2";
             var url = $"{baseUrl}{path}";
 
             var parameters = ParamConversion.ConvertParam_InvInfoToDictionary(param);
@@ -349,7 +349,7 @@ namespace BD.Inventory.WebApi.WLNoperation
         public async Task<InvInfo> GetGoodsInvInfobySku(Param_InvInfo param)
         {
             var baseUrl = WlnUtil.GetBase_Url();
-            var path = "/erp/open/inventory/items/get/by/modifytime";
+            var path = "/erp/open/inventory/items/get/by/modifytimev2";
             var url = $"{baseUrl}{path}";
 
             var parameters = ParamConversion.ConvertParam_InvInfoToDictionary(param);
@@ -377,6 +377,8 @@ namespace BD.Inventory.WebApi.WLNoperation
                 if (res != null && res.data != null && res.data.Count > 0)
                 {
                     model = res.data[0];
+                    model.storage_code = param.storage_code;
+                    model.storage_name = param.storage_name;
                 }
 
 

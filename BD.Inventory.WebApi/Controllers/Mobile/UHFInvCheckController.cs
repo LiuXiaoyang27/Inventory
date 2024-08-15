@@ -45,16 +45,16 @@ namespace BD.Inventory.WebApi.Controllers.Mobile
                 // 查询单号
                 var bill_code_dt = _instance.GetBillCode("");
 
-                // 查询仓库
-                var storage_dt = _instance.GetStorage("");
+                // 查询仓库 目前用不到
+                //var storage_dt = _instance.GetStorage("");
 
-                return JsonHelper.SuccessJson(CommonOperation.DataTable2JArray(bill_code_dt), CommonOperation.DataTable2JArray(storage_dt));
+                return JsonHelper.SuccessJson(CommonOperation.DataTable2JArray(bill_code_dt));
 
             }
             catch (Exception ex)
             {
 
-                LogHelper.LogError(playload, ex, Constant.ActionEnum.Show, "查询单号和仓库");
+                LogHelper.LogError(playload, ex, Constant.ActionEnum.Show, "查询所有单号");
                 return JsonHelper.ErrorJson(ex.Message);
             }
 
@@ -76,10 +76,10 @@ namespace BD.Inventory.WebApi.Controllers.Mobile
             }
             try
             {
-                bool IsExist = _instance.IsExist("InvCheckBillBody", $"bill_code='{bill_code}'");
+                bool IsExist = BaseBll.Instance.IsExist("InvCheckBillBody", $"bill_code='{bill_code}'");
                 if (!IsExist)
                 {
-                    return JsonHelper.ErrorJson("数据不存在");
+                    return JsonHelper.ErrorJson("单号不存在");
                 }
 
                 ChooseBillCodeDTO model = _instance.SelDataByBillCode(bill_code, pageIndex, pageSize);
