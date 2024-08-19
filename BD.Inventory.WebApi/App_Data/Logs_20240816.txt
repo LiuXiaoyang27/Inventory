@@ -1,0 +1,32 @@
+2024-08-16 09:18:05,626 [17] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-16 09:18:52,778 [17] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-16 12:04:32,675 [22] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Data.SqlClient.SqlException (0x80131904): 列名 'batch_code' 无效。
+列名 'expiry_date' 无效。
+列名 'stock_type' 无效。
+   在 System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   在 System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   在 System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   在 System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   在 System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   在 System.Data.SqlClient.SqlDataReader.get_MetaData()
+   在 System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   在 System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   在 System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   在 System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   在 System.Data.SqlClient.SqlCommand.ExecuteScalar()
+   在 BD.Inventory.Dal.InvCheckDal.GetUnCheckListOfPage(String bill_code, ChooseBillCodeDTO result, Int32 pageSize, SqlConnection connection, SqlTransaction transaction)
+   在 BD.Inventory.Dal.InvCheckDal.<>c__DisplayClass22_0.<SelDataByBillCode>b__0(SqlConnection connection, SqlTransaction transaction)
+   在 BD.Inventory.DBUtility.SqlHelper.ExecuteTransaction(Action`2 sqlAction, String connectionString) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.DBUtility\SqlHelper.cs:行号 277
+   在 BD.Inventory.Dal.InvCheckDal.SelDataByBillCode(String bill_code, Int32 pageIndex, Int32 pageSize, Boolean after)
+   在 BD.Inventory.Bll.InvCheckBll.SelDataByBillCode(String bill_code, Int32 pageIndex, Int32 pageSize, Boolean after) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.Bll\InvCheckBll.cs:行号 291
+   在 BD.Inventory.WebApi.Controllers.Mobile.UHFInvCheckController.SelDataByBillCode(String bill_code, Int32 pageIndex, Int32 pageSize) 位置 E:\visual studio 2019\source\repos\Inventory\BD.Inventory.WebApi\Controllers\Mobile\UHFInvCheckController.cs:行号 85
+ClientConnectionId:4d53e1da-16d0-4e90-b23e-599123d34e8a
+Error Number:207,State:1,Class:16
+2024-08-16 12:16:38,548 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-16 12:27:02,844 [208] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-16 12:31:14,527 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-16 12:33:17,838 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-16 12:49:32,601 [208] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-16 12:51:39,314 [8] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-16 13:10:07,509 [10] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent

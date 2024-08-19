@@ -4,8 +4,14 @@ namespace BD.Inventory.Entities.DTO
 {
     public class ChooseBillCodeDTO
     {
+
         /// <summary>
-        /// 库存数量（需盘点数量）
+        /// 万里牛中库存数
+        /// </summary>
+        public int wln_inv_num { get; set; }
+
+        /// <summary>
+        /// 需盘点数量，绑定了RFID的数量
         /// </summary>
         public int total_num { get; set; }
 

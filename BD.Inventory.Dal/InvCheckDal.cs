@@ -511,95 +511,78 @@ namespace BD.Inventory.Dal
         }
         #endregion
 
-        #region 选择单号查询数据
-
-        ///// <summary>
-        ///// 选择单号查询数据 (原逻辑)
-        ///// </summary>
-        ///// <param name="model"></param>
-        ///// <returns></returns>
-        //public ChooseBillCodeDTO SelDataByBillCode1(string bill_code, int pageIndex, int pageSize)
-        //{
-        //    ChooseBillCodeDTO result = new ChooseBillCodeDTO();
-        //    string connectionString = SqlHelper.connectionString;
-
-        //    Action<SqlConnection, SqlTransaction> sqlAction = (connection, transaction) =>
-        //    {
-        //        // 通过单据编码查询表头仓库
-        //        Storage storageModel = GetStorageByBillCode(bill_code, connection, transaction);
-        //        result.storage_code = storageModel.storage_code;
-        //        result.storage_name = storageModel.storage_name;
-        //        // 通过单据编码查询所有待盘点数据
-        //        List<UHFInvCheck> toCheckList = GetBillCheckBody(bill_code, connection, transaction);
-        //        if (toCheckList != null && toCheckList.Count > 0)
-        //        {
-        //            // 查询需要盘点总数
-        //            result.total_num = toCheckList.Count;  //  GetTotalNum(bodyList, connection, transaction);
-        //                                                   // 将所有待盘点数据插入数据库
-        //            foreach (var item in toCheckList)
-        //            {
-        //                if (!UHFInvExists(item.bill_code, item.RFID, connection, transaction))
-        //                {
-        //                    InsertUHFInv(item, storageModel.storage_code, connection, transaction);
-        //                }
-        //            }
-        //        }
-
-        //        // 查询已盘点数量
-        //        result.has_checked_num = GetCheckedNum(bill_code, connection, transaction);
-
-        //        result.currentPage = pageIndex;
-
-        //        // 查询未盘点数据集
-        //        //result.un_check_items = GetUnCheckListOfPage(bill_code, pageSize, pageIndex, connection, transaction);
-        //        GetUnCheckListOfPage(bill_code, result, pageSize, connection, transaction);
-        //    };
-
-        //    SqlHelper.ExecuteTransaction(sqlAction, connectionString);
-
-        //    return result;
-        //}
+        #region 选择单号查询数据      
 
         /// <summary>
         /// 选择单号查询数据 (新逻辑)
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="bill_code"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="after">是否盘点结束</param>
         /// <returns></returns>
-        public ChooseBillCodeDTO SelDataByBillCode(string bill_code, int pageIndex, int pageSize)
+        public ChooseBillCodeDTO SelDataByBillCode(string bill_code, int pageIndex, int pageSize, bool after)
         {
             ChooseBillCodeDTO result = new ChooseBillCodeDTO();
             string connectionString = SqlHelper.connectionString;
 
             Action<SqlConnection, SqlTransaction> sqlAction = (connection, transaction) =>
             {
-                // 通过单据编码查询表头仓库
-                Storage storageModel = GetStorageByBillCode(bill_code, connection, transaction);
-                result.storage_code = storageModel.storage_code;
-                result.storage_name = storageModel.storage_name;
-                // 通过单据编码查询所有待盘点数据
-                List<UHFInvCheck> toCheckList = GetBillCheckBody(bill_code, connection, transaction);
-                if (toCheckList != null && toCheckList.Count > 0)
+                if (!after)
                 {
-                    // 查询需要盘点总数
-                    result.total_num = toCheckList.Count;  //  GetTotalNum(bodyList, connection, transaction);
-                                                           // 将所有待盘点数据插入数据库
-                    foreach (var item in toCheckList)
+                    // 如果是盘点前
+
+                    // 1.通过单据编码查询表头仓库
+                    Storage storageModel = GetStorageByBillCode(bill_code, connection, transaction);
+                    result.storage_code = storageModel.storage_code;
+                    result.storage_name = storageModel.storage_name;
+
+                    // 2.通过单据编码查询所有待盘点数据
+                    List<UHFInvCheck> toCheckList = GetBillCheckBody(bill_code, connection, transaction);
+                    if (toCheckList != null && toCheckList.Count > 0)
                     {
-                        if (!UHFInvExists(item.bill_code, item.RFID, connection, transaction))
+                        // 万里牛中的库存数量  PS:新增字段 20240816
+                        // 按spec_code去重
+                        var distincttoCheckList = toCheckList.GroupBy(g => g.spec_code)
+                                                          .Select(group => group.First())
+                                                          .ToList();
+
+                        // 计算去重后的num之和
+                        result.wln_inv_num = (int)distincttoCheckList.Sum(m => m.quantity_start);
+                        // 查询需要盘点总数
+                        result.total_num = toCheckList.Count;  //  GetTotalNum(bodyList, connection, transaction);
+                                                               // 将所有待盘点数据插入数据库
+                        foreach (var item in toCheckList)
                         {
-                            InsertUHFInv(item, storageModel.storage_code, connection, transaction);
+                            if (!UHFInvExists(item.bill_code, item.RFID, connection, transaction))
+                            {
+                                InsertUHFInv(item, storageModel.storage_code, connection, transaction);
+                            }
                         }
                     }
+
+                    // 查询已盘点数量
+                    result.has_checked_num = GetCheckedNum(bill_code, connection, transaction);
+
+                    result.currentPage = pageIndex;
+
+                    // 查询未盘点数据集
+                    //result.un_check_items = GetUnCheckListOfPage(bill_code, pageSize, pageIndex, connection, transaction);
+                    GetUnCheckListOfPage(bill_code, result, pageSize, connection, transaction);
+
+                }
+                else
+                {
+                    // 如果是盘点后
+                    // 1.查询已盘点数量
+                    result.has_checked_num = GetCheckedNum(bill_code, connection, transaction);
+
+                    result.currentPage = pageIndex;
+
+                    // 2.查询未盘点数据集
+                    GetUnCheckListOfPage(bill_code, result, pageSize, connection, transaction);
                 }
 
-                // 查询已盘点数量
-                result.has_checked_num = GetCheckedNum(bill_code, connection, transaction);
-
-                result.currentPage = pageIndex;
-
-                // 查询未盘点数据集
-                //result.un_check_items = GetUnCheckListOfPage(bill_code, pageSize, pageIndex, connection, transaction);
-                GetUnCheckListOfPage(bill_code, result, pageSize, connection, transaction);
             };
 
             SqlHelper.ExecuteTransaction(sqlAction, connectionString);
@@ -662,7 +645,7 @@ namespace BD.Inventory.Dal
         /// <returns></returns>
         private void GetUnCheckListOfPage(string bill_code, ChooseBillCodeDTO result, int pageSize, SqlConnection connection, SqlTransaction transaction)
         {
-            List<UHFInvCheck> list = new List<UHFInvCheck>();
+            List<UHFInvCheck> list;
             string query = SelUHFInvCheck_Sql("has_check = 0 and bill_code=@bill_code");
 
 
@@ -696,11 +679,6 @@ namespace BD.Inventory.Dal
 
                 result.un_check_items = list;
             }
-
-
-
-
-
 
         }
 
@@ -769,10 +747,10 @@ namespace BD.Inventory.Dal
         {
             string nextId = Utils.GetNextID();
             string query = @"
-        INSERT INTO UHFInvCheck (id, goods_code, goods_name, bill_code, batch_code,batch_date, expiry_date, nums, quantity, quantity_start, 
-        spec_code, spec_name, stock_type, storage_code, has_check, create_time, RFID, barcode) 
-        VALUES (@id, @goods_code, @goods_name, @bill_code, @batch_code, @batch_date, @expiry_date, @nums, @quantity, @quantity_start, 
-        @spec_code, @spec_name, @stock_type, @storage_code, -1, GETDATE(), @RFID, @barcode)";
+        INSERT INTO UHFInvCheck (id, goods_code, goods_name, bill_code, nums, quantity, quantity_start, 
+        spec_code, spec_name, storage_code, has_check, create_time, RFID, barcode) 
+        VALUES (@id, @goods_code, @goods_name, @bill_code, @nums, @quantity, @quantity_start, 
+        @spec_code, @spec_name, @storage_code, -1, GETDATE(), @RFID, @barcode)";
 
             using (SqlCommand command = new SqlCommand(query, connection, transaction))
             {
@@ -780,15 +758,11 @@ namespace BD.Inventory.Dal
                 command.Parameters.AddWithValue("@goods_code", model.goods_code);
                 command.Parameters.AddWithValue("@goods_name", model.goods_name);
                 command.Parameters.AddWithValue("@bill_code", model.bill_code);
-                command.Parameters.AddWithValue("@batch_code", model.batch_code);
-                command.Parameters.AddWithValue("@batch_date", model.batch_date.HasValue ? (object)model.batch_date.Value : DBNull.Value);
-                command.Parameters.AddWithValue("@expiry_date", model.expiry_date.HasValue ? (object)model.expiry_date.Value : DBNull.Value);
                 command.Parameters.AddWithValue("@nums", model.nums.HasValue ? (object)model.nums.Value : DBNull.Value);
                 command.Parameters.AddWithValue("@quantity", model.quantity.HasValue ? (object)model.quantity.Value : DBNull.Value);
                 command.Parameters.AddWithValue("@quantity_start", model.quantity_start.HasValue ? (object)model.quantity_start.Value : DBNull.Value);
                 command.Parameters.AddWithValue("@spec_code", model.spec_code);
                 command.Parameters.AddWithValue("@spec_name", model.spec_name);
-                command.Parameters.AddWithValue("@stock_type", model.stock_type.HasValue ? (object)model.stock_type.Value : DBNull.Value);
                 command.Parameters.AddWithValue("@storage_code", storage_code);
                 command.Parameters.AddWithValue("@RFID", model.RFID);
                 command.Parameters.AddWithValue("@barcode", model.barcode);
@@ -853,9 +827,9 @@ namespace BD.Inventory.Dal
 
         private string SelUHFInvCheck_Sql(string strWhere)
         {
-            string query = @"select id, goods_code, goods_name, bill_code, batch_code, expiry_date,
-                nums, quantity, quantity_start, spec_code, spec_name,
-                stock_type, storage_code, has_check, create_time,RFID,barcode from UHFInvCheck ";
+            string query = @"select id, goods_code, goods_name, bill_code,
+                nums, quantity, quantity_start, spec_code, spec_name, 
+                storage_code, has_check, create_time,RFID,barcode from UHFInvCheck ";
             if (!string.IsNullOrEmpty(strWhere))
             {
                 query += "where " + strWhere;
@@ -932,8 +906,8 @@ namespace BD.Inventory.Dal
         /// 盘点提交
         /// </summary>
         /// <param name="scannedRFIDsSet">扫描的RFID</param>
-        /// <param name="bill_code"></param>
-        /// <param name="isRepeat"></param>
+        /// <param name="bill_code">单号</param>
+        /// <param name="isRepeat">0：初盘，1：复盘</param>
         /// <returns></returns>
         public bool InvSubmit(HashSet<string> scannedRFIDsSet, string bill_code, int isRepeat)
         {
@@ -960,14 +934,14 @@ namespace BD.Inventory.Dal
                     {
                         allRFIDsSet.Add(item.RFID);
                     }
-                    // 将扫描的RFIDs存储在集合中
-                    //HashSet<string> scannedRFIDsSet = new HashSet<string>(RFIDList);
+                    // 1. 过滤掉scannedRFIDsSet中不属于此单号下的RFID
+                    //scannedRFIDsSet.RemoveWhere(rfid => !IsValidRFIDForBill(rfid, bill_code, connection, transaction));
 
                     // 找出未扫描的RFIDs
                     var missingRFIDs = allRFIDsSet.Except(scannedRFIDsSet);
 
                     // 修改已扫描的数据，将has_check改为1
-                    UpdateHasCheck(scannedRFIDsSet, bill_code, connection, transaction);
+                    UpdateHasCheck(scannedRFIDsSet, bill_code, allList, connection, transaction);
 
                     // 修改未扫描的数据，将has_check改为0
                     UpdateUnCheck(missingRFIDs, bill_code, connection, transaction);
@@ -980,25 +954,89 @@ namespace BD.Inventory.Dal
             return true;
         }
 
+        ///// <summary>
+        ///// 验证rfid是否输入指定单号
+        ///// </summary>
+        ///// <param name="rfid"></param>
+        ///// <param name="bill_code"></param>
+        ///// <param name="connection"></param>
+        ///// <param name="transaction"></param>
+        ///// <returns></returns>
+        //private bool IsValidRFIDForBill(string rfid, string bill_code, SqlConnection connection, SqlTransaction transaction)
+        //{
+        //    bool res = false;
+        //    string sql = @"select count(1) from UHFInvCheck where bill_code=@bill_code and RFID=@RFID";
+        //    using (SqlCommand command = new SqlCommand(sql, connection, transaction))
+        //    {
+        //        command.Parameters.AddWithValue("@bill_code", bill_code);
+        //        command.Parameters.AddWithValue("@RFID", rfid);
+        //        int i = (int)command.ExecuteScalar();
+        //        if (i > 0)
+        //        {
+        //            res = true;
+        //        }
+        //        else
+        //        {
+        //            res = false;
+        //        }
+        //    }
+        //    return res;
+        //}
+
         /// <summary>
-        /// 修改已扫描的数据，将has_check改为1
+        /// 修改已扫描的数据，将has_check改为1；PS:新增逻辑，同时修改盘点单表体中的已盘数量和差异数量
+        /// 如果表体中所有数据的差异数为0，这修改表头状态为 1：已完成
         /// </summary>
         /// <param name="scannedRFIDsSet"></param>
         /// <param name="connection"></param>
         /// <param name="transaction"></param>
-        private void UpdateHasCheck(HashSet<string> scannedRFIDsSet, string bill_code, SqlConnection connection, SqlTransaction transaction)
+        private void UpdateHasCheck(HashSet<string> scannedRFIDsSet, string bill_code, List<UHFInvCheck> allList, SqlConnection connection, SqlTransaction transaction)
         {
+            List<InvCheckBillBody> b_list = new List<InvCheckBillBody>();
             foreach (var item in scannedRFIDsSet)
             {
-                string sql = @"update UHFInvCheck set has_check = 1 where bill_code=@bill_code and RFID=@RFID";
+                // 根据RFID和单号找到实体
+                UHFInvCheck model = allList.FirstOrDefault(m => m.RFID == item);
+                if (model != null)
+                {
+                    // 找到对象,创建表体
+                    InvCheckBillBody b_modle = new InvCheckBillBody
+                    {
+                        spec_code = model.spec_code,
+                        quantity_start = model.quantity_start,
+                    };
+                    b_list.Add(b_modle);
+                    // 修改已扫描的数据，将has_check改为1
+                    string sql = @"update UHFInvCheck set has_check = 1 where bill_code=@bill_code and RFID=@RFID";
+                    using (SqlCommand command = new SqlCommand(sql, connection, transaction))
+                    {
+                        command.Parameters.AddWithValue("@bill_code", bill_code);
+                        command.Parameters.AddWithValue("@RFID", item);
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+            }
+
+            // 使用LINQ对集合中的barcode字段进行分组，并计算每个组的元素数量
+            var groupedByCount = b_list.GroupBy(b => b.spec_code)
+                                      .Select(group => new { specCode = group.Key, Count = group.Count(), startCount = group.First().quantity_start });
+            // 修改盘点单体实盘数量与差异数量
+            foreach (var item in groupedByCount)
+            {
+                int count = item.Count;
+                int startCount = (int)item.startCount;
+                int change_size = startCount - count;
+                string sql = @"update InvCheckBillBody set quantity = @count,change_size=@change_size  where spec_code=@spec_code";
                 using (SqlCommand command = new SqlCommand(sql, connection, transaction))
                 {
-                    command.Parameters.AddWithValue("@bill_code", bill_code);
-                    command.Parameters.AddWithValue("@RFID", item);
+                    command.Parameters.AddWithValue("@count", count);
+                    command.Parameters.AddWithValue("@change_size", change_size);
+                    // command.Parameters.AddWithValue("@spec_code", $"[{item.specCode}]"); // 仅当spec_code可能包含特殊字符时使用
+                    command.Parameters.AddWithValue("@spec_code", item.specCode);
                     command.ExecuteNonQuery();
                 }
             }
-
         }
 
         /// <summary>

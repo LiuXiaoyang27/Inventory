@@ -311,51 +311,53 @@ namespace BD.Inventory.WebApi.Controllers.PC
         [HttpPost]
         public async Task<HttpResponseMessage> SyncData(string bill_code)
         {
-            playload = (JWTPlayloadInfo)Request.Properties["playload"];
-            if (string.IsNullOrEmpty(bill_code))
-            {
-                return JsonHelper.FailJson("参数不能为空！");
-            }
 
-            try
-            {
-                InvCheckDTO model = _instance.GetModelByBillCode(bill_code);
-                if (model == null)
-                {
-                    return JsonHelper.FailJson("不存在该单据信息");
-                }
+            return JsonHelper.SuccessJson("功能未开放");
+            //playload = (JWTPlayloadInfo)Request.Properties["playload"];
+            //if (string.IsNullOrEmpty(bill_code))
+            //{
+            //    return JsonHelper.FailJson("参数不能为空！");
+            //}
 
-                var dt = _instance.GetDetail(bill_code, 0, 1, "b.goods_code", out int records);
+            //try
+            //{
+            //    InvCheckDTO model = _instance.GetModelByBillCode(bill_code);
+            //    if (model == null)
+            //    {
+            //        return JsonHelper.FailJson("不存在该单据信息");
+            //    }
 
-                if (records > 0)
-                {
-                    model.details = CommonOperation.ConvertDataTableToModelList<InvCheckDetailDTO>(dt);
-                    WlnPublic wlnpu = new WlnPublic();
-                    Param_InvCheckBill_Add i = ParamConversion.DTO2WNLparam(model);
+            //    var dt = _instance.GetDetail(bill_code, 0, 1, "b.goods_code", out int records);
 
-                    CheckBill_AddApiResponse res = await wlnpu.AddCheckBill(i);
-                    if (res.code == 0)
-                    {
-                        return JsonHelper.SuccessJson();
-                    }
-                    else
-                    {
-                        return JsonHelper.SuccessJson(res.message);
-                    }
+            //    if (records > 0)
+            //    {
+            //        model.details = CommonOperation.ConvertDataTableToModelList<InvCheckDetailDTO>(dt);
+            //        WlnPublic wlnpu = new WlnPublic();
+            //        Param_InvCheckBill_Add i = ParamConversion.DTO2WNLparam(model);
 
-                    //return await wlnpu.AddCheckBill(i);
-                }
-                else
-                {
-                    return JsonHelper.FailJson("没有要同步的数据");
-                }
+            //        CheckBill_AddApiResponse res = await wlnpu.AddCheckBill(i);
+            //        if (res.code == 0)
+            //        {
+            //            return JsonHelper.SuccessJson();
+            //        }
+            //        else
+            //        {
+            //            return JsonHelper.SuccessJson(res.message);
+            //        }
 
-            }
-            catch (Exception ex)
-            {
-                LogHelper.LogError(playload, ex, Constant.ActionEnum.Show, "同步数据");
-                return JsonHelper.ErrorJson(ex.Message);
-            }
+            //        //return await wlnpu.AddCheckBill(i);
+            //    }
+            //    else
+            //    {
+            //        return JsonHelper.FailJson("没有要同步的数据");
+            //    }
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    LogHelper.LogError(playload, ex, Constant.ActionEnum.Show, "同步数据");
+            //    return JsonHelper.ErrorJson(ex.Message);
+            //}
 
         }
 

@@ -43,7 +43,7 @@ namespace BD.Inventory.WebApi.Controllers.Mobile
             try
             {
                 // 查询单号
-                var bill_code_dt = _instance.GetBillCode("");
+                var bill_code_dt = _instance.GetBillCode("and state <> 1");
 
                 // 查询仓库 目前用不到
                 //var storage_dt = _instance.GetStorage("");
@@ -115,13 +115,12 @@ namespace BD.Inventory.WebApi.Controllers.Mobile
 
             try
             {
-                // 去重
-                //List<string> RFIDList = RFIDs.Distinct().ToList();
+                // 扫描出的RFID集合（已去重）
                 HashSet<string> scannedRFIDsSet = new HashSet<string>(RFIDs);
 
                 bool result = _instance.InvSubmit(scannedRFIDsSet, bill_code, isRepeat);
 
-                ChooseBillCodeDTO model = _instance.SelDataByBillCode(bill_code, pageIndex, pageSize);
+                ChooseBillCodeDTO model = _instance.SelDataByBillCode(bill_code, pageIndex, pageSize, true);
                 string msg = "";
                 if (isRepeat == 0)
                 {

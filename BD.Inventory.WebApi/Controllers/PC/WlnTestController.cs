@@ -117,33 +117,34 @@ namespace BD.Inventory.WebApi.Controllers.PC
         [HttpGet]
         public async Task<IHttpActionResult> InsertCheckBillInfo()
         {
-            try
-            {
-                Stopwatch stopwatch = new Stopwatch();
+            return JsonHelper1.SuccessJson(this, "功能尚未开放");
+            //try
+            //{
+            //    Stopwatch stopwatch = new Stopwatch();
 
-                // 开始计时
-                stopwatch.Start();
-                InsertCheckBillResult i = new InsertCheckBillResult { check_bill_head_insert_count = 0, check_bill_body_insert_count = 0, storage_insert_count = 0 };
-                //await wlnpu.ImportCheckBillAndStorage(i);
-                var importCheckBillAndStorageTask = Task.Run(() => wlnpu.ImportCheckBillAndStorage(i));
-                await importCheckBillAndStorageTask;
-                stopwatch.Stop();
-                // 转换为分钟
-                double executionTimeInMinutes = stopwatch.Elapsed.TotalMinutes;
-                //return JsonHelper.SuccessJson(JsonHelper.ModelToJObject(i));
-                var result = new JObject
-                {
-                    ["status"] = 200,
-                    ["msg"] = $"共用时{executionTimeInMinutes}分钟。",
-                    ["data"] = JToken.FromObject(JsonHelper.ModelToJObject(i))
-                };
+            //    // 开始计时
+            //    stopwatch.Start();
+            //    InsertCheckBillResult i = new InsertCheckBillResult { check_bill_head_insert_count = 0, check_bill_body_insert_count = 0, storage_insert_count = 0 };
+            //    //await wlnpu.ImportCheckBillAndStorage(i);
+            //    var importCheckBillAndStorageTask = Task.Run(() => wlnpu.ImportCheckBillAndStorage(i));
+            //    await importCheckBillAndStorageTask;
+            //    stopwatch.Stop();
+            //    // 转换为分钟
+            //    double executionTimeInMinutes = stopwatch.Elapsed.TotalMinutes;
+            //    //return JsonHelper.SuccessJson(JsonHelper.ModelToJObject(i));
+            //    var result = new JObject
+            //    {
+            //        ["status"] = 200,
+            //        ["msg"] = $"共用时{executionTimeInMinutes}分钟。",
+            //        ["data"] = JToken.FromObject(JsonHelper.ModelToJObject(i))
+            //    };
 
-                return Ok(result);
-            }
-            catch (System.Exception ex)
-            {
-                return Content(System.Net.HttpStatusCode.InternalServerError, new JObject { ["status"] = 500, ["msg"] = ex.Message });
-            }
+            //    return Ok(result);
+            //}
+            //catch (System.Exception ex)
+            //{
+            //    return Content(System.Net.HttpStatusCode.InternalServerError, new JObject { ["status"] = 500, ["msg"] = ex.Message });
+            //}
 
         }
 
@@ -202,10 +203,6 @@ namespace BD.Inventory.WebApi.Controllers.PC
         /// <summary>
         /// 查询所有仓库
         /// </summary>
-        /// <param name="article_number">货号</param>
-        /// <param name="bar_code">商品条码，不同条码英文逗号隔离 最多支持20个(编码为空时使用)</param>
-        /// <param name="sku_code">规格编码，不同编码英文逗号隔离 最多支持20个</param>
-        /// <param name="storage_code">目标仓库编码;使用,隔开;不传时默认查询所有可用仓库</param>
         /// <returns></returns>
         [HttpGet]
         public async Task<HttpResponseMessage> GetStorage()

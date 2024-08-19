@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace BD.Inventory.Entities
 {
+    ///<summary>
+    ///手持库存盘点表
+    ///</summary>
     public partial class UHFInvCheck
     {
         public UHFInvCheck()
@@ -40,27 +43,6 @@ namespace BD.Inventory.Entities
         /// Nullable:True
         /// </summary>           
         public string bill_code { get; set; }
-
-        /// <summary>
-        /// Desc:批次号,不返回数据
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public string batch_code { get; set; }
-
-        /// <summary>
-        /// Desc:生产日期
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public DateTime? batch_date { get; set; }
-
-        /// <summary>
-        /// Desc:有效期
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public DateTime? expiry_date { get; set; }
 
         /// <summary>
         /// Desc:数量
@@ -98,13 +80,6 @@ namespace BD.Inventory.Entities
         public string spec_name { get; set; }
 
         /// <summary>
-        /// Desc:库存类型 0 正品 1次品
-        /// Default:
-        /// Nullable:True
-        /// </summary>           
-        public int? stock_type { get; set; }
-
-        /// <summary>
         /// Desc:仓库编号
         /// Default:
         /// Nullable:True
@@ -126,14 +101,20 @@ namespace BD.Inventory.Entities
         public DateTime? create_time { get; set; }
 
         /// <summary>
-        /// RFID
-        /// </summary>
+        /// Desc:RFID
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
         public string RFID { get; set; }
 
         /// <summary>
-        /// barcode
-        /// </summary>
+        /// Desc:条码
+        /// Default:
+        /// Nullable:True
+        /// </summary>           
         public string barcode { get; set; }
 
     }
+
 }
+

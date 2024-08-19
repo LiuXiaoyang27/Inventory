@@ -281,11 +281,14 @@ namespace BD.Inventory.Bll
         /// <summary>
         /// 通过单据编码查询盘点相关数据
         /// </summary>
-        /// <param name="bill_code"></param>
+        /// <param name="bill_code">单号</param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="after">是否盘点结束</param>
         /// <returns></returns>
-        public ChooseBillCodeDTO SelDataByBillCode(string bill_code, int pageIndex, int pageSize)
+        public ChooseBillCodeDTO SelDataByBillCode(string bill_code, int pageIndex, int pageSize, bool after = false)
         {
-            return DalInstance.SelDataByBillCode(bill_code, pageIndex, pageSize);
+            return DalInstance.SelDataByBillCode(bill_code, pageIndex, pageSize, after);
         }
 
         /// <summary>

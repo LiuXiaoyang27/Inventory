@@ -73,7 +73,7 @@ namespace BD.Inventory.WebApi.QuartzJob
 
         public static string GetJobTime()
         {
-            string jobTime = ConfigurationManager.AppSettings["importGoods"];// string.Format("{0} {1} {2} {3} * ?", 30, 27, 14, "*");
+            string jobTime = ConfigurationManager.AppSettings["importCheckBill"];// string.Format("{0} {1} {2} {3} * ?", 30, 27, 14, "*");
 
             return jobTime;//"59 30 17 20 * ?";
         }
