@@ -12,7 +12,16 @@ namespace BD.Inventory.Common
         {
             //计算总页数
             pageSize = pageSize == 0 ? recordCount : pageSize;
-            int pageCount = (recordCount + pageSize - 1) / pageSize;
+            int pageCount = 0;
+            if (recordCount == 0)
+            {
+                pageCount = 0;
+            }
+            else
+            {
+                pageCount = (recordCount + pageSize - 1) / pageSize;
+            }
+            //int pageCount = (recordCount + pageSize - 1) / pageSize;
             pageIndex = Math.Max(1, Math.Min(pageIndex, pageCount)); //确保页数在有效范围内
 
             //拼接SQL字符串，加上ROW_NUMBER函数进行分页

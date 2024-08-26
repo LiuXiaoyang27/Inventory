@@ -162,6 +162,21 @@ namespace BD.Inventory.Bll
         }
 
         /// <summary>
+        /// 导出详情
+        /// </summary>
+        /// <param name="strWhere"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="filedOrder"></param>
+        /// <param name="recordCount"></param>
+        /// <returns></returns>
+        public DataTable ImportDetail(string strWhere, int pageSize, int pageIndex, string filedOrder, out int recordCount)
+        {
+            return DalInstance.ImportDetail(strWhere, pageSize, pageIndex, filedOrder, out recordCount);
+
+        }
+
+        /// <summary>
         /// 批量删除盘点单
         /// </summary>
         /// <param name="ids"></param>

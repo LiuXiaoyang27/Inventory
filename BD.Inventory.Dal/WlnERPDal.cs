@@ -42,17 +42,16 @@ namespace BD.Inventory.Dal
                     if (!GoodExists(good.sys_goods_uid, connection, transaction))
                     {
                         InsertGood(good, connection, transaction);
-                        result.goods_insert_count++;
-
-                        if (good.specs != null && good.specs.Count > 0)
+                        result.goods_insert_count++; 
+                    }
+                    if (good.specs != null && good.specs.Count > 0)
+                    {
+                        foreach (var spec in good.specs)
                         {
-                            foreach (var spec in good.specs)
+                            if (!SpecExists(spec.sys_spec_uid, connection, transaction))
                             {
-                                if (!SpecExists(spec.sys_spec_uid, connection, transaction))
-                                {
-                                    InsertSpec(spec, connection, transaction);
-                                    result.spec_insert_count++;
-                                }
+                                InsertSpec(spec, connection, transaction);
+                                result.spec_insert_count++;
                             }
                         }
                     }

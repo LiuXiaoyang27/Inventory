@@ -257,6 +257,36 @@ namespace BD.Inventory.Dal
         }
 
         /// <summary>
+        /// 导出详情
+        /// </summary>
+        /// <param name="spec_code"></param>
+        /// <returns></returns>
+        public DataTable ImportDetail(string strWhere, int pageSize, int pageIndex, string filedOrder, out int recordCount)
+        {
+            string query = @"SELECT 
+                                b.bill_code,
+                                b.goods_code,
+                                b.goods_name,                               
+                                b.spec_code,
+                                b.spec_name,
+                                b.bar_code,
+                                b.quantity_start,
+                                b.quantity,
+                                b.change_size
+                            FROM 
+                                InventoryDB.dbo.InvCheckBillBody AS b
+                            WHERE ";
+
+            query += strWhere;
+            string countSql = PageHelper.CreateCountingSql(query);
+            recordCount = Convert.ToInt32(SqlHelper.GetSingle(countSql));
+            string pageSql = PageHelper.CreatePageSql(recordCount, pageSize, pageIndex, query, filedOrder);
+
+            DataSet ds = SqlHelper.Query(pageSql);
+            return ds.Tables[0];
+        }
+
+        /// <summary>
         /// 批量删除盘点单
         /// </summary>
         /// <param name="ids"></param>
@@ -482,11 +512,13 @@ namespace BD.Inventory.Dal
         public DataTable GetBillCode(string strWhere)
         {
             var sb = new StringBuilder();
-            sb.Append($"select id, bill_code from { table1} where is_delete_tag = 0 ");
+            sb.Append($"select id, bill_code from {table1} where is_delete_tag = 0 ");
             if (!string.IsNullOrEmpty(strWhere))
             {
                 sb.Append(strWhere);
             }
+
+            sb.Append(" order by create_time DESC");
 
             var ds = SqlHelper.Query(sb.ToString());
             return ds.Tables[0];
@@ -881,7 +913,8 @@ namespace BD.Inventory.Dal
         private List<UHFInvCheck> GetAllCheckList(string bill_code, SqlConnection connection, SqlTransaction transaction)
         {
             List<UHFInvCheck> list = new List<UHFInvCheck>();
-            string query = SelUHFInvCheck_Sql("has_check <> 1 and bill_code=@bill_code");
+            //string query = SelUHFInvCheck_Sql("has_check <> 1 and bill_code=@bill_code");
+            string query = SelUHFInvCheck_Sql("bill_code=@bill_code");
             using (SqlCommand command = new SqlCommand(query, connection, transaction))
             {
                 command.Parameters.AddWithValue("@bill_code", bill_code);
@@ -924,8 +957,10 @@ namespace BD.Inventory.Dal
                 }
                 if (isRepeat == 1)
                 {
-                    // 只查询未盘点数据
-                    allList = GetUnCheckList(bill_code, connection, transaction);
+                    //// 只查询未盘点数据
+                    //allList = GetUnCheckList(bill_code, connection, transaction);
+                    // 查询所有数据 lxy 20240822  点补盘也查询所有数据
+                    allList = GetAllCheckList(bill_code, connection, transaction);
                 }
                 if (allList != null && allList.Count > 0)
                 {
@@ -945,6 +980,7 @@ namespace BD.Inventory.Dal
 
                     // 修改未扫描的数据，将has_check改为0
                     UpdateUnCheck(missingRFIDs, bill_code, connection, transaction);
+
 
                 }
             };
@@ -1049,7 +1085,7 @@ namespace BD.Inventory.Dal
         {
             foreach (var item in missingRFIDs)
             {
-                string sql = @"update UHFInvCheck set has_check = 0 where bill_code=@bill_code and RFID=@RFID";
+                string sql = @"update UHFInvCheck set has_check = 0 where has_check = -1 and bill_code=@bill_code and RFID=@RFID";
                 using (SqlCommand command = new SqlCommand(sql, connection, transaction))
                 {
                     command.Parameters.AddWithValue("@bill_code", bill_code);

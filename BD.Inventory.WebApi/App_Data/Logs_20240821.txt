@@ -1,0 +1,24 @@
+2024-08-21 14:07:02,827 [1] ERROR BD.Inventory.WebApi.Common.LogHelper.LogError - BD.Inventory.WebApi.Common.LogContent
+System.Data.SqlClient.SqlException (0x80131904): 用户 'sa' 登录失败。
+   在 BD.Inventory.DBUtility.SqlHelper.Query(String sql, SqlParameter[] parameters) 位置 F:\vs2019\source\repos\Inventory\BD.Inventory.DBUtility\SqlHelper.cs:行号 33
+   在 BD.Inventory.Dal.InvCheckDal.GetSyncDate() 位置 F:\vs2019\source\repos\Inventory\BD.Inventory.Dal\InvCheckDal.cs:行号 415
+   在 BD.Inventory.Bll.InvCheckBll.GetSyncDate() 位置 F:\vs2019\source\repos\Inventory\BD.Inventory.Bll\InvCheckBll.cs:行号 236
+   在 BD.Inventory.WebApi.QuartzJob.SyncDataJob.GetJobTime() 位置 F:\vs2019\source\repos\Inventory\BD.Inventory.WebApi\QuartzJob\SyncDataJob.cs:行号 92
+   在 BD.Inventory.WebApi.QuartzJob.SyncDataJob.get_JobTime() 位置 F:\vs2019\source\repos\Inventory\BD.Inventory.WebApi\QuartzJob\SyncDataJob.cs:行号 24
+   在 BD.Inventory.WebApi.QuartzJob.SchedulerServer.StartQuartz() 位置 F:\vs2019\source\repos\Inventory\BD.Inventory.WebApi\QuartzJob\SchedulerServer.cs:行号 56
+   在 BD.Inventory.WebApi.QuartzJob.SchedulerServer.SynChronizeStart() 位置 F:\vs2019\source\repos\Inventory\BD.Inventory.WebApi\QuartzJob\SchedulerServer.cs:行号 22
+ClientConnectionId:b8c4e2f4-0b66-4a11-929d-f529b73ee6e3
+Error Number:18456,State:1,Class:14
+2024-08-21 14:11:46,914 [6] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-21 14:15:04,883 [6] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-21 14:23:33,746 [5] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-21 14:27:04,997 [5] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-21 16:10:43,907 [19] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-21 16:17:05,433 [22] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-21 16:22:02,948 [7] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-21 16:23:00,505 [37] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-21 16:23:09,191 [37] WARN  BD.Inventory.WebApi.Common.LogHelper.LogWarn - BD.Inventory.WebApi.Common.LogContent
+2024-08-21 16:24:22,756 [35] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-21 16:24:36,971 [39] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-21 16:24:44,798 [39] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent
+2024-08-21 16:26:28,586 [39] INFO  BD.Inventory.WebApi.Common.LogHelper.LogAction - BD.Inventory.WebApi.Common.LogContent

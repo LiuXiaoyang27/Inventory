@@ -11,6 +11,7 @@ using BD.Inventory.WebApi.WLNoperation.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -109,9 +110,10 @@ namespace BD.Inventory.WebApi.Controllers.PC
         /// <param name="goods_name">商品名称</param>
         /// <param name="spec_name">规格名称</param>
         /// <param name="barcode">商品条码</param>
+        /// <param name="showChange">是否只显示差异（默认true）</param>
         /// <returns></returns>
         [HttpGet]
-        public HttpResponseMessage SelDetail(string bill_code, int pageIndex = 1, int pageSize = 10, string goods_code = "", string goods_name = "", string spec_name = "", string barcode = "")
+        public HttpResponseMessage SelDetail(string bill_code, int pageIndex = 1, int pageSize = 10, string goods_code = "", string goods_name = "", string spec_name = "", string barcode = "", bool showChange = true)
         {
             playload = (JWTPlayloadInfo)Request.Properties["playload"];
             if (string.IsNullOrEmpty(bill_code))
@@ -127,6 +129,10 @@ namespace BD.Inventory.WebApi.Controllers.PC
                     return JsonHelper.FailJson("单号不存在");
                 }
                 StringBuilder strWhere = new StringBuilder($" b.bill_code = '{bill_code}'");
+                if (showChange)
+                {
+                    strWhere.Append(" and b.change_size <> 0");
+                }
                 if (!string.IsNullOrEmpty(goods_code))
                 {
                     strWhere.Append(" and b.goods_code like '%" + goods_code + "%'");
@@ -247,6 +253,23 @@ namespace BD.Inventory.WebApi.Controllers.PC
             }
             try
             {
+                BaseBll base_instance = BaseBll.Instance;
+                string isExistBill = "";
+                // 已经开始盘点的单号不允许删除
+                foreach (var bill_code in bill_codes)
+                {
+                    bool isExc = base_instance.IsExist("UHFInvCheck", $"bill_code='{bill_code}'");
+                    if (isExc)
+                    {
+                        isExistBill += bill_code + ",";
+                    }
+                }
+                if (!string.IsNullOrEmpty(isExistBill))
+                {
+                    string msg = $"单号：{isExistBill}正在盘点中，不允许删除";
+                    return JsonHelper.ErrorJson(msg);
+                }
+
                 int res = _instance.DeleteBatch(bill_codes, playload.UserName);
                 if (res > 0)
                 {
@@ -296,6 +319,93 @@ namespace BD.Inventory.WebApi.Controllers.PC
             catch (Exception ex)
             {
                 LogHelper.LogError(playload, ex, Constant.ActionEnum.Confirm, "完成盘点单");
+                return JsonHelper.ErrorJson(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 导出盘点详情
+        /// </summary>
+        /// <param name="bill_code">盘点单号</param>
+        /// <returns></returns>
+        [HttpGet]
+        public HttpResponseMessage ExportDetail(string bill_code)
+        {
+            playload = (JWTPlayloadInfo)Request.Properties["playload"];
+
+            try
+            {
+                // 查询单号是否存在
+                bool isEx = BaseBll.Instance.IsExist("InvCheckBillHead", $"bill_code='{bill_code}'");
+                if (!isEx)
+                {
+                    return JsonHelper.FailJson("单号不存在");
+                }
+                StringBuilder strWhere = new StringBuilder($" b.bill_code = '{bill_code}' and b.change_size <> 0");
+
+                var dt = _instance.ImportDetail(strWhere.ToString(), 0, 1, "bill_code", out int recordCount);
+                if (dt.Rows.Count > 0)
+                {
+                    // 组织数据
+                    //for (int i = 0; i < dt.Rows.Count; i++)
+                    //{
+                    //    string filePath = dt.Rows[i]["FilePath"].ToString();
+                    //    int lastSlashIndex = filePath.LastIndexOf('/');
+                    //    if (lastSlashIndex != -1 && lastSlashIndex < filePath.Length - 1)
+                    //    {
+                    //        string newFilePath = filePath.Substring(lastSlashIndex + 1);
+                    //        dt.Rows[i]["FilePath"] = newFilePath;
+                    //    }
+                    //}
+                    // 创建列名映射字典
+                    Dictionary<string, string> columnMapping = new Dictionary<string, string>
+                        {
+                            { "row_number","序号"},
+                            {"bill_code","单号" },
+                            { "goods_code", "商品编码" },
+                            { "goods_name", "商品名称" },
+                            { "spec_code", "规格编码" },
+                            { "spec_name", "规格名称" },
+                            { "bar_code", "条码" },
+                            { "quantity_start", "库存数" },
+                            { "quantity", "已盘数" },
+                            { "change_size", "差异数" }
+                        };
+                    // 获取应用程序的基目录
+                    string appBasePath = AppDomain.CurrentDomain.BaseDirectory;
+
+                    // 构建导出路径
+                    string pPath = DateTime.Now.ToString("yyyyMMdd");
+                    string strPath = Path.Combine(appBasePath, "App_File", "export", pPath);
+                    //string fullUploadPath = Utils.GetMapPath(strPath); // 上传目录的物理路径
+                    // 检查上传的物理路径是否存在，不存在则创建
+                    if (!Directory.Exists(strPath))
+                    {
+                        Directory.CreateDirectory(strPath);
+                    }
+                    // 文件名
+                    string fileName = DateTime.Now.ToString("yyyyMMddHHmmss") + $"_盘点详情（单号：{bill_code}）.xlsx";
+                    // 导出路径
+                    string excelFilePath = Path.Combine(strPath, fileName);
+                    NPOIHelper.ExportDTtoExcel(dt, $"盘点详情（单号：{bill_code}）", excelFilePath, columnMapping, true);
+
+                    // 构建文件的URL（相对路径）
+                    string fileUrl = Path.Combine("/App_File", "export", pPath, fileName);
+
+                    // 将反斜杠替换为正斜杠
+                    fileUrl = fileUrl.Replace("\\", "/");
+
+                    return JsonHelper.SuccessJson("导出成功！", fileUrl);
+
+                }
+                else
+                {
+                    return JsonHelper.FailJson("该单据无差异数据");
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.LogError(playload, ex, Constant.ActionEnum.Export, "导出数据");
                 return JsonHelper.ErrorJson(ex.Message);
             }
         }

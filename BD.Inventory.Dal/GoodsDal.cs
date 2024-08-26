@@ -165,12 +165,13 @@ namespace BD.Inventory.Dal
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public int BindingCodeBatch(BindRFIDDTO model)
+        public string BindingCodeBatch(BindRFIDDTO model)
         {
 
             string connectionString = SqlHelper.connectionString;
-            int result = 0;
-
+            string result = "OK";
+            //string r_msg = "";
+            string msg = "";
             Action<SqlConnection, SqlTransaction> sqlAction = (connection, transaction) =>
             {
                 foreach (var RFID in model.RFIDs)
@@ -181,12 +182,21 @@ namespace BD.Inventory.Dal
                         model.RFID = RFID;
                         result += InsertRFID(model, connection, transaction);
                     }
+                    else
+                    {
+                        msg += $"{RFID},";
+                    }
 
                 }
 
             };
 
             SqlHelper.ExecuteTransaction(sqlAction, connectionString);
+
+            if (!string.IsNullOrEmpty(msg))
+            {
+                result = $"RFID:{msg}已绑定其他商品";
+            }
 
             return result;
         }

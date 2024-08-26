@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/BD.Inventory.WebApi/App_Data/Logs_20240807.txt
+/BD.Inventory.WebApi/App_File/export/20240822

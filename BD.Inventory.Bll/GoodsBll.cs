@@ -80,7 +80,7 @@ namespace BD.Inventory.Bll
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public int BindingCodeBatch(BindRFIDDTO model)
+        public string BindingCodeBatch(BindRFIDDTO model)
         {
             return DalInstance.BindingCodeBatch(model);
         }

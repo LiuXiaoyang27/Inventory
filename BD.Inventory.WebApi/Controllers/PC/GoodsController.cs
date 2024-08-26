@@ -230,8 +230,8 @@ namespace BD.Inventory.WebApi.Controllers.PC
                 }
                 HashSet<string> scannedRFIDsSet = new HashSet<string>(model.RFIDs);
                 model.RFIDs = scannedRFIDsSet.ToList();
-                int res = _instance.BindingCodeBatch(model);
-                if (res > 0)
+                string res = _instance.BindingCodeBatch(model);
+                if (res.Equals("OK"))
                 {
                     string msg = $"条码绑定,商品编码：{model.goods_code},规格编码：{ model.spec_code},绑定{ res}条数据";
                     LogHelper.LogAction(playload, Constant.ActionEnum.Add, msg);
@@ -241,7 +241,7 @@ namespace BD.Inventory.WebApi.Controllers.PC
                 {
                     string msg = $"条码绑定,商品编码：{model.goods_code},规格编码：{ model.spec_code}";
                     LogHelper.LogWarn(playload, Constant.ActionEnum.Add, msg);
-                    return JsonHelper1.FailJson(this, "绑定失败");
+                    return JsonHelper1.FailJson(this, res);
 
                 }
 

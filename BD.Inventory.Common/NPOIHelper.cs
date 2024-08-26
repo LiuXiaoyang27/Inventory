@@ -84,7 +84,7 @@ namespace BD.Inventory.Common
                         headStyle.Alignment = HorizontalAlignment.Center;
                         IFont font = workbook.CreateFont();
                         font.FontHeightInPoints = 20;
-                        font.Boldweight = 700;
+                        font.IsBold = true;
                         headStyle.SetFont(font);
                         headerRow.GetCell(0).CellStyle = headStyle;
 
@@ -101,7 +101,7 @@ namespace BD.Inventory.Common
                         headStyle.Alignment = HorizontalAlignment.Center;
                         IFont font = workbook.CreateFont();
                         font.FontHeightInPoints = 10;
-                        font.Boldweight = 700;
+                        font.IsBold = true;
                         headStyle.SetFont(font);
                         //写入列标题
                         foreach (DataColumn column in dtSource.Columns)
@@ -210,6 +210,11 @@ namespace BD.Inventory.Common
             }
             ISheet sheet = null;
             ICellStyle dateStyle = workbook.CreateCellStyle();
+            // 设置边框为实线
+            dateStyle.BorderTop = BorderStyle.Thin;
+            dateStyle.BorderBottom = BorderStyle.Thin;
+            dateStyle.BorderLeft = BorderStyle.Thin;
+            dateStyle.BorderRight = BorderStyle.Thin;
             // 设置水平对齐为居中（5代表水平居中）
             dateStyle.Alignment = HorizontalAlignment.Center;
             // 设置垂直对齐为居中（2代表垂直居中）
@@ -219,6 +224,11 @@ namespace BD.Inventory.Common
 
             // lxy
             ICellStyle dateStyle1 = workbook.CreateCellStyle();
+            // 设置边框为实线
+            dateStyle1.BorderTop = BorderStyle.Thin;
+            dateStyle1.BorderBottom = BorderStyle.Thin;
+            dateStyle1.BorderLeft = BorderStyle.Thin;
+            dateStyle1.BorderRight = BorderStyle.Thin;
             // 设置水平对齐为居中（5代表水平居中）
             dateStyle1.Alignment = HorizontalAlignment.Center;
             // 设置垂直对齐为居中（2代表垂直居中）
@@ -226,12 +236,17 @@ namespace BD.Inventory.Common
             IDataFormat format1 = workbook.CreateDataFormat();
             dateStyle1.DataFormat = format1.GetFormat("yyyy-mm-dd HH:mm:ss");
 
-            //// lxy
-            //ICellStyle dateStyle2 = workbook.CreateCellStyle();
-            //// 设置水平对齐为居中（5代表水平居中）
-            //dateStyle2.Alignment = HorizontalAlignment.Left;
-            //// 设置垂直对齐为居中（2代表垂直居中）
-            //dateStyle2.VerticalAlignment = VerticalAlignment.Center;
+            // lxy
+            ICellStyle Style2 = workbook.CreateCellStyle();
+            // 设置边框为实线
+            Style2.BorderTop = BorderStyle.Thin;
+            Style2.BorderBottom = BorderStyle.Thin;
+            Style2.BorderLeft = BorderStyle.Thin;
+            Style2.BorderRight = BorderStyle.Thin;
+            // 设置水平对齐为居中（5代表水平居中）
+            Style2.Alignment = HorizontalAlignment.Center;
+            // 设置垂直对齐为居中（2代表垂直居中）
+            Style2.VerticalAlignment = VerticalAlignment.Center;
 
             //取得列宽
             int[] arrColWidth = new int[dtSource.Columns.Count];
@@ -272,10 +287,17 @@ namespace BD.Inventory.Common
                         headerRow.CreateCell(0).SetCellValue(strHeaderText);
 
                         ICellStyle headStyle = workbook.CreateCellStyle();
+                        // 设置边框为实线
+                        headStyle.BorderTop = BorderStyle.Thin;
+                        headStyle.BorderBottom = BorderStyle.Thin;
+                        headStyle.BorderLeft = BorderStyle.Thin;
+                        headStyle.BorderRight = BorderStyle.Thin;
+
                         headStyle.Alignment = HorizontalAlignment.Center;
                         IFont font = workbook.CreateFont();
                         font.FontHeightInPoints = 20;
-                        font.Boldweight = 700;
+                        //font.Boldweight = 700;
+                        font.IsBold = true;
                         headStyle.SetFont(font);
                         headerRow.GetCell(0).CellStyle = headStyle;
                     }
@@ -285,19 +307,37 @@ namespace BD.Inventory.Common
                     {
                         IRow headerRow = sheet.CreateRow(1);
                         ICellStyle headStyle = workbook.CreateCellStyle();
+                        // 设置背景颜色
+                        headStyle.FillForegroundColor = IndexedColors.PaleBlue.Index;
+                        headStyle.FillPattern = FillPattern.SolidForeground;
+                        // 设置边框为实线
+                        headStyle.BorderTop = BorderStyle.Thin;
+                        headStyle.BorderBottom = BorderStyle.Thin;
+                        headStyle.BorderLeft = BorderStyle.Thin;
+                        headStyle.BorderRight = BorderStyle.Thin;
                         headStyle.Alignment = HorizontalAlignment.Center;
                         IFont font = workbook.CreateFont();
                         font.FontHeightInPoints = 10;
-                        font.Boldweight = 700;
+                        font.IsBold = true;
                         headStyle.SetFont(font);
 
 
                         foreach (DataColumn column in dtSource.Columns)
                         {
-                            headerRow.CreateCell(column.Ordinal).SetCellValue(dir[column.ColumnName]);
+                            if (dir.ContainsKey(column.ColumnName))
+                            {
+                                headerRow.CreateCell(column.Ordinal).SetCellValue(dir[column.ColumnName]);
+                            }
+                            else
+                            {
+                                // 如果字典中没有对应的列名，可以选择使用列名本身作为默认值
+                                headerRow.CreateCell(column.Ordinal).SetCellValue(column.ColumnName);
+                            }
+
                             headerRow.GetCell(column.Ordinal).CellStyle = headStyle;
-                            //设置列宽
+                            // 设置列宽
                             sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * 256 * 2);
+
                         }
                     }
 
@@ -317,46 +357,21 @@ namespace BD.Inventory.Common
                     switch (column.DataType.ToString())
                     {
                         case "System.String": //字符串类型
-                            double result;
-                            if (isNumeric(drValue, out result))
-                            {
-                                if(strColumn != "ContactInfo")
-                                {
-                                    double.TryParse(drValue, out result);
-                                    newCell.SetCellValue(result);
-                                    break;
-                                }
-                                else
-                                {
-                                    newCell.SetCellValue(drValue);
-                                    break;
-                                }
-                                
-                            }
-                            else
-                            {
-                                newCell.SetCellValue(drValue);
-                                break;
-                            }
+                            newCell.SetCellValue(drValue);
+                            newCell.CellStyle = Style2;
+                            break;
                         case "System.DateTime": //日期类型
                             DateTime dateV;
                             DateTime.TryParse(drValue, out dateV);
                             newCell.SetCellValue(dateV);
-                            // lxy
-                            if (strColumn == "BirthDate")
-                            {
-                                newCell.CellStyle = dateStyle;
-                            }
-                            else
-                            {
-                                newCell.CellStyle = dateStyle1; //格式化显示
-                            }
+                            newCell.CellStyle = dateStyle1; //格式化显示
 
                             break;
                         case "System.Boolean": //布尔型
                             bool boolV = false;
                             bool.TryParse(drValue, out boolV);
                             newCell.SetCellValue(boolV);
+                            newCell.CellStyle = Style2;
                             break;
                         case "System.Int16": //整型
                         case "System.Int32":
@@ -365,18 +380,22 @@ namespace BD.Inventory.Common
                             int intV = 0;
                             int.TryParse(drValue, out intV);
                             newCell.SetCellValue(intV);
+                            newCell.CellStyle = Style2;
                             break;
                         case "System.Decimal": //浮点型
                         case "System.Double":
                             double doubV = 0;
                             double.TryParse(drValue, out doubV);
                             newCell.SetCellValue(doubV);
+                            newCell.CellStyle = Style2;
                             break;
                         case "System.DBNull": //空值处理
                             newCell.SetCellValue("");
+                            newCell.CellStyle = Style2;
                             break;
                         default:
                             newCell.SetCellValue(drValue.ToString());
+                            newCell.CellStyle = Style2;
                             break;
                     }
                 }
