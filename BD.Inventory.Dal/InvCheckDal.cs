@@ -1054,9 +1054,9 @@ namespace BD.Inventory.Dal
 
             }
 
-            // 使用LINQ对集合中的barcode字段进行分组，并计算每个组的元素数量
+            // 使用LINQ对集合中的spec_code字段进行分组，并计算每个组的元素数量
             var groupedByCount = b_list.GroupBy(b => b.spec_code)
-                                      .Select(group => new { specCode = group.Key, Count = group.Count(), startCount = group.First().quantity_start });
+                                      .Select(group => new { specCode = group.Key, Count = group.Count(), startCount = group.First().quantity_start }).ToList();
             // 修改盘点单体实盘数量与差异数量
             foreach (var item in groupedByCount)
             {

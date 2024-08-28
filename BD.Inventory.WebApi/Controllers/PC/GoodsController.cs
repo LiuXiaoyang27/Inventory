@@ -40,9 +40,10 @@ namespace BD.Inventory.WebApi.Controllers.PC
         /// <param name="goods_name">商品名称</param>
         /// <param name="spec2">规格</param>
         /// <param name="barcode">条码</param>
+        /// <param name="rfid">RFID(20240826，输入rfid可以查询所绑商品)</param>
         /// <returns></returns>
         [HttpGet]
-        public HttpResponseMessage SelGoods(int pageIndex = 1, int pageSize = 10, string goods_code = "", string goods_name = "", string spec2 = "", string barcode = "")
+        public HttpResponseMessage SelGoods(int pageIndex = 1, int pageSize = 10, string goods_code = "", string goods_name = "", string spec2 = "", string barcode = "",string rfid="")
         {
             playload = (JWTPlayloadInfo)Request.Properties["playload"];
             try
@@ -63,6 +64,10 @@ namespace BD.Inventory.WebApi.Controllers.PC
                 if (!string.IsNullOrEmpty(barcode))
                 {
                     strWhere.Append($" and t2.barcode like '%{barcode}%'");
+                }
+                if (!string.IsNullOrEmpty(rfid))
+                {
+                    strWhere.Append($" and t3.RFID like '%{rfid}%'");
                 }
 
                 var dt = _instance.GetPageList(pageSize, pageIndex, strWhere.ToString(), "t1.modify_time DESC", out int records);
