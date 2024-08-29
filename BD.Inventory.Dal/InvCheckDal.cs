@@ -263,19 +263,34 @@ namespace BD.Inventory.Dal
         /// <returns></returns>
         public DataTable ImportDetail(string strWhere, int pageSize, int pageIndex, string filedOrder, out int recordCount)
         {
-            string query = @"SELECT 
-                                b.bill_code,
-                                b.goods_code,
-                                b.goods_name,                               
-                                b.spec_code,
-                                b.spec_name,
-                                b.bar_code,
-                                b.quantity_start,
-                                b.quantity,
-                                b.change_size
-                            FROM 
-                                InventoryDB.dbo.InvCheckBillBody AS b
-                            WHERE ";
+            //string query = @"SELECT 
+            //                    b.bill_code,
+            //                    b.goods_code,
+            //                    b.goods_name,                               
+            //                    b.spec_code,
+            //                    b.spec_name,
+            //                    b.bar_code,
+            //                    b.quantity_start,
+            //                    b.quantity,
+            //                    b.change_size
+            //                FROM 
+            //                    InventoryDB.dbo.InvCheckBillBody AS b
+            //                WHERE ";
+            string query = @"SELECT
+	                        b.bill_code,
+	                        b.goods_code,
+	                        b.goods_name,
+	                        b.spec_code,
+	                        b.spec_name,
+	                        b.bar_code,
+	                        b.quantity_start,
+	                        b.quantity,
+	                        b.change_size,
+                          c.RFID	
+                        FROM
+	                        InvCheckBillBody AS b LEFT JOIN UHFInvCheck AS c
+                          ON b.bar_code = c.barcode
+                        WHERE ";
 
             query += strWhere;
             string countSql = PageHelper.CreateCountingSql(query);
