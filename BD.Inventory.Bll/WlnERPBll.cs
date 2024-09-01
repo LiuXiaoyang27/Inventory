@@ -20,6 +20,15 @@ namespace BD.Inventory.Bll
         }
 
         /// <summary>
+        /// 删除原商品数据
+        /// </summary>
+        /// <returns></returns>
+        public int DelOldGoods()
+        {
+            return DalInstance.DelOldGoods();
+        }
+
+        /// <summary>
         /// 批量插入商品信息
         /// </summary>
         /// <param name="list"></param>
@@ -29,7 +38,7 @@ namespace BD.Inventory.Bll
             foreach (var item in list)
             {
                 // 假设每个商品对象的specs属性都是有效的
-                if (item.specs != null)
+                if (item.specs != null && item.specs.Count > 0)
                 {
                     // 将goods_code赋值给所有规格对象，避免在循环中重复访问属性
                     var goodsCode = item.goods_code;

@@ -127,38 +127,44 @@ namespace BD.Inventory.WebApi.WLNoperation
             var parameters = ParamConversion.ConvertParam_GoodsToDictionary(param);
             try
             {
-                // 当前页（循环用）
-                int pageindex = 0;
-                GoodsApiResponse res;
-                do
+                // 删除原数据
+                int old_res = _instance.DelOldGoods();
+                if (old_res >= 0)
                 {
-                    pageindex++;
-                    res = new GoodsApiResponse();
-                    parameters["page"] = pageindex.ToString();
-                    // 包含签名的参数
-                    var data = WlnUtil.SignParameters(parameters, WlnConfig.appkey, WlnConfig.secret);
-
-                    var content = new FormUrlEncodedContent(data);
-
-                    var response = await Client.PostAsync(url, content);
-                    if (!response.IsSuccessStatusCode)
+                    // 当前页（循环用）
+                    int pageindex = 0;
+                    GoodsApiResponse res;
+                    do
                     {
-                        LogHelper.LogWarn(playload, Constant.ActionEnum.Copy, "拉取商品信息失败");
-                        throw new HttpRequestException($"Error: {response.StatusCode}");
-                    }
+                        pageindex++;
+                        res = new GoodsApiResponse();
+                        parameters["page"] = pageindex.ToString();
+                        // 包含签名的参数
+                        var data = WlnUtil.SignParameters(parameters, WlnConfig.appkey, WlnConfig.secret);
 
-                    var responseBody = await response.Content.ReadAsStringAsync();
-                    //dynamic deserializedContent = JsonConvert.DeserializeObject(responseBody);
-                    res = JsonConvert.DeserializeObject<GoodsApiResponse>(responseBody);
+                        var content = new FormUrlEncodedContent(data);
 
-                    if (res != null && res.data != null && res.data.Count > 0)
-                    {
-                        _instance.InsertGoodsInfo(res.data, result);
+                        var response = await Client.PostAsync(url, content);
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            LogHelper.LogWarn(playload, Constant.ActionEnum.Copy, "拉取商品信息失败");
+                            throw new HttpRequestException($"Error: {response.StatusCode}");
+                        }
 
-                    }
+                        var responseBody = await response.Content.ReadAsStringAsync();
+                        //dynamic deserializedContent = JsonConvert.DeserializeObject(responseBody);
+                        res = JsonConvert.DeserializeObject<GoodsApiResponse>(responseBody);
+
+                        if (res != null && res.data != null && res.data.Count > 0)
+                        {
+                            _instance.InsertGoodsInfo(res.data, result);
+
+                        }
 
 
-                } while (res != null && res.data != null && res.data.Count > 0);
+                    } while (res != null && res.data != null && res.data.Count > 0);
+                }
+
 
                 LogHelper.LogAction(playload, Constant.ActionEnum.Copy, "拉取商品信息到本地");
 

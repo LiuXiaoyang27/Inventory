@@ -24,7 +24,25 @@ namespace BD.Inventory.Dal
         // 私有构造函数，防止外部实例化该类。
         private WlnERPDal()
         {
-        }      
+        }
+
+        // 新增前删除原数据
+        public int DelOldGoods()
+        {
+            List<CommandInfo> sqlList = new List<CommandInfo>();
+
+            StringBuilder strSql_g = new StringBuilder();
+            strSql_g.Append(" delete from Goods;");
+            CommandInfo cmd = new CommandInfo(strSql_g.ToString());
+            sqlList.Add(cmd);
+            StringBuilder strSql_S = new StringBuilder();
+            strSql_S.Append(" delete from Specifications;");
+            CommandInfo cmd1 = new CommandInfo(strSql_S.ToString());
+            sqlList.Add(cmd1);
+
+            int result = SqlHelper.ExecuteSqlTran(sqlList);
+            return result;
+        }
 
         /// <summary>
         /// 批量插入商品信息
@@ -34,25 +52,35 @@ namespace BD.Inventory.Dal
         public void InsertGoodsInfo(List<Goods> list, InsertGoodsResult result)
         {
             string connectionString = SqlHelper.connectionString;
-
             foreach (var good in list)
             {
                 Action<SqlConnection, SqlTransaction> sqlAction = (connection, transaction) =>
                 {
-                    if (!GoodExists(good.sys_goods_uid, connection, transaction))
-                    {
-                        InsertGood(good, connection, transaction);
-                        result.goods_insert_count++; 
-                    }
+
+                    //if (!GoodExists(good.sys_goods_uid, connection, transaction))
+                    //{
+                    //    InsertGood(good, connection, transaction);
+                    //    result.goods_insert_count++;
+                    //}
+                    //if (good.specs != null && good.specs.Count > 0)
+                    //{
+                    //    foreach (var spec in good.specs)
+                    //    {
+                    //        if (!SpecExists(spec.sys_spec_uid, connection, transaction))
+                    //        {
+                    //            InsertSpec(spec, connection, transaction);
+                    //            result.spec_insert_count++;
+                    //        }
+                    //    }
+                    //}
+                    InsertGood(good, connection, transaction);
+                    result.goods_insert_count++;
                     if (good.specs != null && good.specs.Count > 0)
                     {
                         foreach (var spec in good.specs)
                         {
-                            if (!SpecExists(spec.sys_spec_uid, connection, transaction))
-                            {
-                                InsertSpec(spec, connection, transaction);
-                                result.spec_insert_count++;
-                            }
+                            InsertSpec(spec, connection, transaction);
+                            result.spec_insert_count++;
                         }
                     }
                 };
