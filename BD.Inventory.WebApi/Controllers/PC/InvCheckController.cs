@@ -342,9 +342,9 @@ namespace BD.Inventory.WebApi.Controllers.PC
                     return JsonHelper.FailJson("单号不存在");
                 }
                 StringBuilder strWhere = new StringBuilder($" b.bill_code = '{bill_code}' and b.change_size <> 0");
-                strWhere.Append($" and c.bill_code = '{bill_code}' and c.has_check = 0  ");
+                // strWhere.Append($" and c.bill_code = '{bill_code}' and c.has_check = 0  ");
 
-                var dt = _instance.ImportDetail(strWhere.ToString(), 0, 1, "c.has_check,c.barcode", out int recordCount);
+                var dt = _instance.ImportDetail(strWhere.ToString(), 0, 1, "b.bar_code,c.has_check", out int recordCount);
                 if (dt.Rows.Count > 0)
                 {
                     // 组织数据
@@ -371,6 +371,7 @@ namespace BD.Inventory.WebApi.Controllers.PC
                             { "quantity_start", "库存数" },
                             { "quantity", "已盘数" },
                             { "change_size", "差异数" },
+                            { "has_check","盘点状态"},
                             {"RFID","RFID" }
                         };
                     // 获取应用程序的基目录

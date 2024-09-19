@@ -286,10 +286,11 @@ namespace BD.Inventory.Dal
 	                        b.quantity_start,
 	                        b.quantity,
 	                        b.change_size,
+                            c.has_check,
                           c.RFID	
                         FROM
 	                        InvCheckBillBody AS b LEFT JOIN UHFInvCheck AS c
-                          ON b.bar_code = c.barcode
+                          ON b.bar_code = c.barcode and c.bill_code = b.bill_code
                         WHERE ";
 
             query += strWhere;

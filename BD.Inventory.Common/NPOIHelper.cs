@@ -377,10 +377,59 @@ namespace BD.Inventory.Common
                         case "System.Int32":
                         case "System.Int64":
                         case "System.Byte":
-                            int intV = 0;
-                            int.TryParse(drValue, out intV);
-                            newCell.SetCellValue(intV);
-                            newCell.CellStyle = Style2;
+                            if (strColumn.Equals("has_check"))
+                            {
+                                int.TryParse(drValue, out int intV);
+                                string hascheck;
+                                if(intV == 0)
+                                {
+                                    hascheck = "未盘";
+                                    ICellStyle Style = workbook.CreateCellStyle();
+                                    // 设置边框为实线
+                                    Style.BorderTop = BorderStyle.Thin;
+                                    Style.BorderBottom = BorderStyle.Thin;
+                                    Style.BorderLeft = BorderStyle.Thin;
+                                    Style.BorderRight = BorderStyle.Thin;
+                                    // 设置水平对齐为居中（5代表水平居中）
+                                    Style.Alignment = HorizontalAlignment.Center;
+                                    // 设置垂直对齐为居中（2代表垂直居中）
+                                    Style.VerticalAlignment = VerticalAlignment.Center;
+                                    // 设置填充模式为实心填充
+                                    Style.FillPattern = FillPattern.SolidForeground;                                    
+                                    // 设置填充颜色为红色
+                                    Style.FillForegroundColor = IndexedColors.Red.Index;
+                                    newCell.SetCellValue(hascheck);
+                                    newCell.CellStyle = Style;
+                                }
+                                else
+                                {
+                                    hascheck = "已盘";
+                                    ICellStyle Style = workbook.CreateCellStyle();
+                                    // 设置边框为实线
+                                    Style.BorderTop = BorderStyle.Thin;
+                                    Style.BorderBottom = BorderStyle.Thin;
+                                    Style.BorderLeft = BorderStyle.Thin;
+                                    Style.BorderRight = BorderStyle.Thin;
+                                    // 设置水平对齐为居中（5代表水平居中）
+                                    Style.Alignment = HorizontalAlignment.Center;
+                                    // 设置垂直对齐为居中（2代表垂直居中）
+                                    Style.VerticalAlignment = VerticalAlignment.Center;
+                                    // 设置填充模式为实心填充
+                                    Style.FillPattern = FillPattern.SolidForeground;
+                                    // 设置填充颜色为绿色
+                                    Style.FillForegroundColor = IndexedColors.BrightGreen.Index;
+                                    newCell.SetCellValue(hascheck);
+                                    newCell.CellStyle = Style;
+                                }
+                            }
+                            else
+                            {
+                                int intV = 0;
+                                int.TryParse(drValue, out intV);
+                                newCell.SetCellValue(intV);
+                                newCell.CellStyle = Style2;
+                            }
+                            
                             break;
                         case "System.Decimal": //浮点型
                         case "System.Double":
