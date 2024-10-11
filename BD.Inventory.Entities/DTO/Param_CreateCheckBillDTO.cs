@@ -23,5 +23,10 @@
         /// 规格编码
         /// </summary>
         public string sku_code { get; set; }
+
+        /// <summary>
+        /// 商品分类id
+        /// </summary>
+        public string catagoryid { get; set; }
     }
 }

@@ -202,22 +202,43 @@ namespace BD.Inventory.WebApi.Controllers.PC
                 string msg = "";
                 bool r = false;
 
-                if (string.IsNullOrEmpty(p_wln.article_number) && string.IsNullOrEmpty(p_wln.bar_code) && string.IsNullOrEmpty(p_wln.sku_code))
+                if (!string.IsNullOrEmpty(param.catagoryid))
                 {
-                    // 根据modify_time 查询
-                    p_wln.modify_time = "2003-12-10 13:45:17";
-                    List<InvInfo> res = await wlnpu.GetGoodsInvInfobyModifyTime(p_wln);
+                    // 根据商品类别查询
+
+                    // 根据类别查询商品集合
+                    List<GoodsDTO> goods_list = GoodsBll.Instance.GetGoodsByCategory(param.catagoryid);
+
+                    if (goods_list == null || goods_list.Count == 0)
+                    {
+                        return JsonHelper.ErrorJson("未找到该类别下的商品数据！");
+                    }
+
+                    List<InvInfo> res = await wlnpu.GetGoodsInvInfobyCategory(goods_list, param.storage_code, param.storage_name);
+
                     r = _instance.CreateCheckBill(res, playload.UserName, ref msg);
                 }
                 else
                 {
-                    InvInfo res = await wlnpu.GetGoodsInvInfobySku(p_wln);
-                    List<InvInfo> list = new List<InvInfo>
+                    if (string.IsNullOrEmpty(p_wln.article_number) && string.IsNullOrEmpty(p_wln.bar_code) && string.IsNullOrEmpty(p_wln.sku_code))
+                    {
+                        // 根据modify_time 查询
+                        p_wln.modify_time = "2003-12-10 13:45:17";
+                        List<InvInfo> res = await wlnpu.GetGoodsInvInfobyModifyTime(p_wln);
+                        r = _instance.CreateCheckBill(res, playload.UserName, ref msg);
+                    }
+                    else
+                    {
+                        InvInfo res = await wlnpu.GetGoodsInvInfobySku(p_wln);
+                        List<InvInfo> list = new List<InvInfo>
                     {
                         res
                     };
-                    r = _instance.CreateCheckBill(list, playload.UserName, ref msg);
+                        r = _instance.CreateCheckBill(list, playload.UserName, ref msg);
+                    }
                 }
+
+                
                 if (r)
                 {
                     LogHelper.LogAction(playload, Constant.ActionEnum.Add, "新增盘点单");
@@ -416,63 +437,63 @@ namespace BD.Inventory.WebApi.Controllers.PC
 
 
         #region 添加增量盘点单 (此逻辑暂时弃用)
-        /// <summary>
-        /// 同步盘点单数据
-        /// </summary>
-        /// <param name="bill_code"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<HttpResponseMessage> SyncData(string bill_code)
-        {
+        ///// <summary>
+        ///// 同步盘点单数据
+        ///// </summary>
+        ///// <param name="bill_code"></param>
+        ///// <returns></returns>
+        //[HttpPost]
+        //public async Task<HttpResponseMessage> SyncData(string bill_code)
+        //{
 
-            return JsonHelper.SuccessJson("功能未开放");
-            //playload = (JWTPlayloadInfo)Request.Properties["playload"];
-            //if (string.IsNullOrEmpty(bill_code))
-            //{
-            //    return JsonHelper.FailJson("参数不能为空！");
-            //}
+        //    return JsonHelper.SuccessJson("功能未开放");
+        //    //playload = (JWTPlayloadInfo)Request.Properties["playload"];
+        //    //if (string.IsNullOrEmpty(bill_code))
+        //    //{
+        //    //    return JsonHelper.FailJson("参数不能为空！");
+        //    //}
 
-            //try
-            //{
-            //    InvCheckDTO model = _instance.GetModelByBillCode(bill_code);
-            //    if (model == null)
-            //    {
-            //        return JsonHelper.FailJson("不存在该单据信息");
-            //    }
+        //    //try
+        //    //{
+        //    //    InvCheckDTO model = _instance.GetModelByBillCode(bill_code);
+        //    //    if (model == null)
+        //    //    {
+        //    //        return JsonHelper.FailJson("不存在该单据信息");
+        //    //    }
 
-            //    var dt = _instance.GetDetail(bill_code, 0, 1, "b.goods_code", out int records);
+        //    //    var dt = _instance.GetDetail(bill_code, 0, 1, "b.goods_code", out int records);
 
-            //    if (records > 0)
-            //    {
-            //        model.details = CommonOperation.ConvertDataTableToModelList<InvCheckDetailDTO>(dt);
-            //        WlnPublic wlnpu = new WlnPublic();
-            //        Param_InvCheckBill_Add i = ParamConversion.DTO2WNLparam(model);
+        //    //    if (records > 0)
+        //    //    {
+        //    //        model.details = CommonOperation.ConvertDataTableToModelList<InvCheckDetailDTO>(dt);
+        //    //        WlnPublic wlnpu = new WlnPublic();
+        //    //        Param_InvCheckBill_Add i = ParamConversion.DTO2WNLparam(model);
 
-            //        CheckBill_AddApiResponse res = await wlnpu.AddCheckBill(i);
-            //        if (res.code == 0)
-            //        {
-            //            return JsonHelper.SuccessJson();
-            //        }
-            //        else
-            //        {
-            //            return JsonHelper.SuccessJson(res.message);
-            //        }
+        //    //        CheckBill_AddApiResponse res = await wlnpu.AddCheckBill(i);
+        //    //        if (res.code == 0)
+        //    //        {
+        //    //            return JsonHelper.SuccessJson();
+        //    //        }
+        //    //        else
+        //    //        {
+        //    //            return JsonHelper.SuccessJson(res.message);
+        //    //        }
 
-            //        //return await wlnpu.AddCheckBill(i);
-            //    }
-            //    else
-            //    {
-            //        return JsonHelper.FailJson("没有要同步的数据");
-            //    }
+        //    //        //return await wlnpu.AddCheckBill(i);
+        //    //    }
+        //    //    else
+        //    //    {
+        //    //        return JsonHelper.FailJson("没有要同步的数据");
+        //    //    }
 
-            //}
-            //catch (Exception ex)
-            //{
-            //    LogHelper.LogError(playload, ex, Constant.ActionEnum.Show, "同步数据");
-            //    return JsonHelper.ErrorJson(ex.Message);
-            //}
+        //    //}
+        //    //catch (Exception ex)
+        //    //{
+        //    //    LogHelper.LogError(playload, ex, Constant.ActionEnum.Show, "同步数据");
+        //    //    return JsonHelper.ErrorJson(ex.Message);
+        //    //}
 
-        }
+        //}
 
         /// <summary>
         /// 获取系统同步时间

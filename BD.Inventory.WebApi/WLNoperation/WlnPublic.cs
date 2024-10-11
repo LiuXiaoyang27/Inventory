@@ -9,6 +9,11 @@ using BD.Inventory.Entities;
 using BD.Inventory.Common;
 using BD.Inventory.Bll;
 using System.Collections.Generic;
+using BD.Inventory.Entities.DTO;
+using System.Diagnostics;
+using System.Linq;
+using System;
+using System.Threading;
 
 namespace BD.Inventory.WebApi.WLNoperation
 {
@@ -18,6 +23,9 @@ namespace BD.Inventory.WebApi.WLNoperation
     public class WlnPublic
     {
         private static readonly HttpClient Client = new HttpClient();
+
+        private static readonly SemaphoreSlim semaphore = new SemaphoreSlim(1); // 控制并发请求数
+
 
         private readonly WlnERPBll _instance;
 
@@ -283,8 +291,77 @@ namespace BD.Inventory.WebApi.WLNoperation
                 throw;
             }
 
-        }
+        }        
 
+        /// <summary>
+        /// 根据商品类别查询库存
+        /// </summary>
+        /// <param name="goods_list"></param>
+        /// <param name="storage_code"></param>
+        /// <param name="storage_name"></param>
+        /// <returns></returns>
+        public async Task<List<InvInfo>> GetGoodsInvInfobyCategory(List<GoodsDTO> goods_list, string storage_code, string storage_name)
+        {
+            var baseUrl = WlnUtil.GetBase_Url();
+            var path = "/erp/open/inventory/items/get/by/modifytimev2";
+            var url = $"{baseUrl}{path}";
+
+            var resList = new List<InvInfo>();
+
+            var stopwatch = Stopwatch.StartNew(); // 开始计时
+
+            // 手动分组，每组最多20个
+            for (int i = 0; i < goods_list.Count; i += 20)
+            {
+                var group = goods_list.Skip(i).Take(20).Select(g => g.barcode).ToList();
+
+                var p_wln = new Param_InvInfo
+                {
+                    article_number = "",
+                    bar_code = string.Join(",", group),
+                    sku_code = "", // 如果需要，可以设置 sku_code
+                    storage_code = storage_code
+                };
+
+                var parameters = ParamConversion.ConvertParam_InvInfoToDictionary(p_wln);
+                var data = WlnUtil.SignParameters(parameters, WlnConfig.appkey, WlnConfig.secret);
+                var content = new FormUrlEncodedContent(data);
+
+                try
+                {
+                    using (var response = await Client.PostAsync(url, content))
+                    {
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var responseBody = await response.Content.ReadAsStringAsync();
+                            var res = JsonConvert.DeserializeObject<InvInfoApiResponse>(responseBody);
+
+                            if (res?.data != null)
+                            {
+                                foreach (var model in res.data)
+                                {
+                                    if (model.quantity > 0) // 根据需要的条件进行筛选
+                                    {
+                                        model.storage_code = storage_code;
+                                        model.storage_name = storage_name;
+                                        resList.Add(model);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.LogError(playload, ex, Constant.ActionEnum.Copy, "请求失败(根据类别)");
+                }
+            }
+
+            stopwatch.Stop(); // 停止计时
+            LogHelper.LogAction(playload, Constant.ActionEnum.Copy, $"拉取商品库存信息(根据类别)-{resList.Count}条数据;【执行时间：{stopwatch.ElapsedMilliseconds}ms】");
+            return resList;
+        }
+        
         /// <summary>
         /// 指定仓库拉取库存信息（Modifytime查询，循环page）
         /// </summary>
@@ -335,14 +412,14 @@ namespace BD.Inventory.WebApi.WLNoperation
 
                 resList.ForEach(p => { p.storage_code = param.storage_code; p.storage_name = param.storage_name; });
 
-                LogHelper.LogAction(playload, Constant.ActionEnum.Copy, "拉取商品库存信息");
+                LogHelper.LogAction(playload, Constant.ActionEnum.Copy, "拉取商品库存信息(根据仓库拉取所有)");
                 return resList;
 
 
             }
             catch (System.Exception e)
             {
-                LogHelper.LogError(playload, e, Constant.ActionEnum.Copy, "拉取商品库存信息");
+                LogHelper.LogError(playload, e, Constant.ActionEnum.Copy, "拉取商品库存信息(根据仓库拉取所有)");
                 throw;
             }
 
@@ -388,14 +465,14 @@ namespace BD.Inventory.WebApi.WLNoperation
                 }
 
 
-                LogHelper.LogAction(playload, Constant.ActionEnum.Copy, "拉取商品库存信息");
+                LogHelper.LogAction(playload, Constant.ActionEnum.Copy, "拉取商品库存信息（指定商品）");
                 return model;
 
 
             }
             catch (System.Exception e)
             {
-                LogHelper.LogError(playload, e, Constant.ActionEnum.Copy, "拉取商品库存信息");
+                LogHelper.LogError(playload, e, Constant.ActionEnum.Copy, "拉取商品库存信息（指定商品）");
                 throw;
             }
 
@@ -434,14 +511,53 @@ namespace BD.Inventory.WebApi.WLNoperation
 
 
 
-                LogHelper.LogAction(playload, Constant.ActionEnum.Copy, "拉取商品库存信息");
+                LogHelper.LogAction(playload, Constant.ActionEnum.Copy, "获取仓库信息");
                 return response;
 
 
             }
             catch (System.Exception e)
             {
-                LogHelper.LogError(playload, e, Constant.ActionEnum.Copy, "拉取商品库存信息");
+                LogHelper.LogError(playload, e, Constant.ActionEnum.Copy, "获取仓库信息");
+                throw;
+            }
+
+        }
+
+        /// <summary>
+        /// 获取商品分类
+        /// </summary>
+        /// <returns></returns>
+        public async Task<HttpResponseMessage> GetCatagorypage()
+        {
+            var baseUrl = WlnUtil.GetBase_Url();
+            var path = "/erp/goods/catagorypage/query/v2";
+            var url = $"{baseUrl}{path}";
+
+            var parameters = new Dictionary<string, string>();
+
+            // 添加基本属性
+            parameters.Add("page", "1");
+            parameters.Add("limit", "50");
+
+            try
+            {
+
+                // 包含签名的参数
+                var data = WlnUtil.SignParameters(parameters, WlnConfig.appkey, WlnConfig.secret);
+
+                var content = new FormUrlEncodedContent(data);
+
+                var response = await Client.PostAsync(url, content);
+
+                LogHelper.LogAction(playload, Constant.ActionEnum.Copy, "获取商品分类信息");
+                return response;
+
+
+            }
+            catch (System.Exception e)
+            {
+                LogHelper.LogError(playload, e, Constant.ActionEnum.Copy, "获取商品分类信息");
                 throw;
             }
 

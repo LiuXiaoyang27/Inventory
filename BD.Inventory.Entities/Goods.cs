@@ -1,5 +1,6 @@
 ﻿using BD.Inventory.Common;
 using Newtonsoft.Json;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 
@@ -27,6 +28,7 @@ namespace BD.Inventory.Entities
         /// Default:
         /// Nullable:False
         /// </summary>           
+        [SugarColumn(ColumnName = "sys_goods_uid", IsPrimaryKey = true)]
         public string sys_goods_uid { get; set; }
 
         /// <summary>
@@ -124,6 +126,7 @@ namespace BD.Inventory.Entities
         /// <summary>
         /// 规格集
         /// </summary>
+        [SugarColumn(IsIgnore = true)]
         public List<Specifications> specs { get; set; }
 
     }

@@ -5,9 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BD.Inventory.Dal
 {
@@ -285,6 +283,33 @@ namespace BD.Inventory.Dal
             int result = SqlHelper.ExecuteSql(sql, parameters);
 
             return result > 0;
+        }
+
+        /// <summary>
+        /// 查询指定类别的商品集合
+        /// </summary>
+        /// <param name="catagory_id"></param>
+        /// <returns></returns>
+        public List<GoodsDTO> GetGoodsByCategory(string catagory_id)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("select t1.goods_code,t1.goods_name,t1.unit_name,t2.spec_code,t2.barcode, ");
+            sb.Append("t2.sale_price,t2.wholesale_price,t2.prime_price ");
+            sb.Append($"from {table1} t1 left join {table2} t2 on t1.goods_code=t2.goods_code ");
+            sb.Append("where t1.catagory_id=@catagory_id ");
+            SqlParameter[] parameters =
+            {
+                new SqlParameter("@catagory_id",catagory_id)
+            };
+            DataSet ds = SqlHelper.Query(sb.ToString(), parameters);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                return CommonOperation.ConvertDataTableToModelList<GoodsDTO>(ds.Tables[0]);
+            }
+            else
+            {
+                return null;
+            }
         }
 
     }

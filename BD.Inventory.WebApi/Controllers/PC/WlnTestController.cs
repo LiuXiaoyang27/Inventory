@@ -218,5 +218,24 @@ namespace BD.Inventory.WebApi.Controllers.PC
             }
 
         }
+
+        /// <summary>
+        /// 查询商品分类
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<HttpResponseMessage> GetCatagorypage()
+        {
+            try
+            {
+                return await wlnpu.GetCatagorypage();
+
+            }
+            catch (System.Exception ex)
+            {
+                return JsonHelper.ErrorJson(ex.Message);
+            }
+
+        }
     }
 }

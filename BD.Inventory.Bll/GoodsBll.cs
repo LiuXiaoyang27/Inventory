@@ -3,9 +3,6 @@ using BD.Inventory.Entities.DTO;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BD.Inventory.Bll
 {
@@ -93,6 +90,16 @@ namespace BD.Inventory.Bll
         public bool DelDetail(string id)
         {
             return DalInstance.DelDetail(id);
+        }
+
+        /// <summary>
+        /// 查询仓库中指定类别的商品集合
+        /// </summary>
+        /// <param name="catagory_id"></param>
+        /// <returns></returns>
+        public List<GoodsDTO> GetGoodsByCategory(string catagory_id)
+        {
+            return DalInstance.GetGoodsByCategory(catagory_id);
         }
 
     }
