@@ -589,6 +589,25 @@ namespace BD.Inventory.Dal
                     List<UHFInvCheck> toCheckList = GetBillCheckBody(bill_code, connection, transaction);
                     if (toCheckList != null && toCheckList.Count > 0)
                     {
+                        List<UHFInvCheck> checkList = new List<UHFInvCheck>();
+                        // 未绑定RFID的条码
+                        result.unBindList = new List<string>();
+                        foreach (var item in toCheckList)
+                        {
+                            if (string.IsNullOrEmpty(item.RFID))
+                            {
+                                result.unBindList.Add(item.barcode);
+                            }
+                            else
+                            {
+                                checkList.Add(item);
+                                if (!UHFInvExists(item.bill_code, item.spec_code, item.RFID, connection, transaction))
+                                {
+                                    InsertUHFInv(item, storageModel.storage_code, connection, transaction);
+                                }
+                            }
+
+                        }
                         // 万里牛中的库存数量  PS:新增字段 20240816
                         // 按spec_code去重
                         var distincttoCheckList = toCheckList.GroupBy(g => g.spec_code)
@@ -598,15 +617,9 @@ namespace BD.Inventory.Dal
                         // 计算去重后的num之和
                         result.wln_inv_num = (int)distincttoCheckList.Sum(m => m.quantity_start);
                         // 查询需要盘点总数
-                        result.total_num = toCheckList.Count;  //  GetTotalNum(bodyList, connection, transaction);
-                                                               // 将所有待盘点数据插入数据库
-                        foreach (var item in toCheckList)
-                        {
-                            if (!UHFInvExists(item.bill_code, item.RFID, connection, transaction))
-                            {
-                                InsertUHFInv(item, storageModel.storage_code, connection, transaction);
-                            }
-                        }
+                        result.total_num = checkList.Count; // toCheckList.Count;  //  GetTotalNum(bodyList, connection, transaction);
+                                                            // 将所有待盘点数据插入数据库
+
                     }
 
                     // 查询已盘点数量
@@ -743,10 +756,15 @@ namespace BD.Inventory.Dal
         private List<UHFInvCheck> GetBillCheckBody(string bill_code, SqlConnection connection, SqlTransaction transaction)
         {
             List<UHFInvCheck> list = new List<UHFInvCheck>();
-            // 查询表体数据
-            string query = @"select  t1.RFID,t1.barcode,t2.goods_code, t2.goods_name, t2.bill_code, t2.batch_code, t2.batch_date, t2.expiry_date,
+            //// 查询表体数据-(如果商品没绑定RFID，则查不到)
+            //string query = @"select  t1.RFID,t1.barcode,t2.goods_code, t2.goods_name, t2.bill_code, t2.batch_code, t2.batch_date, t2.expiry_date,
+            //    t2.nums, t2.quantity, t2.quantity_start, t2.spec_code, t2.spec_name,
+            //    t2.stock_type from BindRFID t1 Left Join " + table2 + " t2 ON t1.spec_code=t2.spec_code  where t2.bill_code=@bill_code";
+
+            // 查询表体数据-(如果商品没绑定RFID，则UHFInvCheck表中，RFID,barcode字段为空)
+            string query = @"select  t1.RFID,t2.bar_code as barcode,t2.goods_code, t2.goods_name, t2.bill_code, t2.batch_code, t2.batch_date, t2.expiry_date,
                 t2.nums, t2.quantity, t2.quantity_start, t2.spec_code, t2.spec_name,
-                t2.stock_type from BindRFID t1 Left Join " + table2 + " t2 ON t1.spec_code=t2.spec_code  where t2.bill_code=@bill_code";
+                t2.stock_type from BindRFID t1 Right Join " + table2 + " t2 ON t1.spec_code=t2.spec_code  where t2.bill_code=@bill_code";
             using (SqlCommand command = new SqlCommand(query, connection, transaction))
             {
                 command.Parameters.AddWithValue("@bill_code", bill_code);
@@ -769,17 +787,32 @@ namespace BD.Inventory.Dal
         /// <summary>
         /// 查询待盘点数据是否存在
         /// </summary>
-        /// <param name="sys_goods_uid"></param>
+        /// <param name="bill_code"></param>
+        /// <param name="spec_code"></param>
+        /// <param name="RFID"></param>
         /// <param name="connection"></param>
         /// <param name="transaction"></param>
         /// <returns></returns>
-        private bool UHFInvExists(string bill_code, string RFID, SqlConnection connection, SqlTransaction transaction)
+        private bool UHFInvExists(string bill_code, string spec_code, string RFID, SqlConnection connection, SqlTransaction transaction)
         {
-            string query = "SELECT COUNT(1) FROM UHFInvCheck WHERE bill_code = @bill_code AND RFID = @RFID";
+            string query = "";
+            if (string.IsNullOrEmpty(RFID))
+            {
+                query = "SELECT COUNT(1) FROM UHFInvCheck WHERE bill_code = @bill_code AND spec_code = @spec_code  AND RFID is null";
+            }
+            else
+            {
+                query = "SELECT COUNT(1) FROM UHFInvCheck WHERE bill_code = @bill_code AND spec_code = @spec_code  AND RFID = @RFID";
+            }
             using (SqlCommand command = new SqlCommand(query, connection, transaction))
             {
                 command.Parameters.AddWithValue("@bill_code", bill_code);
-                command.Parameters.AddWithValue("@RFID", RFID);
+                command.Parameters.AddWithValue("@spec_code", spec_code);
+                if (!string.IsNullOrEmpty(RFID))
+                {
+                    command.Parameters.AddWithValue("@RFID", RFID);
+                }
+
                 return (int)command.ExecuteScalar() > 0;
             }
         }
@@ -794,11 +827,24 @@ namespace BD.Inventory.Dal
         private void InsertUHFInv(UHFInvCheck model, string storage_code, SqlConnection connection, SqlTransaction transaction)
         {
             string nextId = Utils.GetNextID();
-            string query = @"
+            string query = "";
+            if (string.IsNullOrEmpty(model.RFID))
+            {
+                query = @"
+        INSERT INTO UHFInvCheck (id, goods_code, goods_name, bill_code, nums, quantity, quantity_start, 
+        spec_code, spec_name, storage_code, has_check, create_time) 
+        VALUES (@id, @goods_code, @goods_name, @bill_code, @nums, @quantity, @quantity_start, 
+        @spec_code, @spec_name, @storage_code, -1, GETDATE())";
+            }
+            else
+            {
+                query = @"
         INSERT INTO UHFInvCheck (id, goods_code, goods_name, bill_code, nums, quantity, quantity_start, 
         spec_code, spec_name, storage_code, has_check, create_time, RFID, barcode) 
         VALUES (@id, @goods_code, @goods_name, @bill_code, @nums, @quantity, @quantity_start, 
         @spec_code, @spec_name, @storage_code, -1, GETDATE(), @RFID, @barcode)";
+            }
+
 
             using (SqlCommand command = new SqlCommand(query, connection, transaction))
             {
@@ -812,8 +858,12 @@ namespace BD.Inventory.Dal
                 command.Parameters.AddWithValue("@spec_code", model.spec_code);
                 command.Parameters.AddWithValue("@spec_name", model.spec_name);
                 command.Parameters.AddWithValue("@storage_code", storage_code);
-                command.Parameters.AddWithValue("@RFID", model.RFID);
-                command.Parameters.AddWithValue("@barcode", model.barcode);
+                if (!string.IsNullOrEmpty(model.RFID))
+                {
+                    command.Parameters.AddWithValue("@RFID", model.RFID);
+                    command.Parameters.AddWithValue("@barcode", model.barcode);
+                }
+
 
                 command.ExecuteNonQuery();
             }
@@ -1101,6 +1151,7 @@ namespace BD.Inventory.Dal
         {
             foreach (var item in missingRFIDs)
             {
+
                 string sql = @"update UHFInvCheck set has_check = 0 where has_check = -1 and bill_code=@bill_code and RFID=@RFID";
                 using (SqlCommand command = new SqlCommand(sql, connection, transaction))
                 {

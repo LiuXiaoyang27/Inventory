@@ -50,5 +50,10 @@ namespace BD.Inventory.Entities.DTO
         /// </summary>
         public int totalCount { get; set; }
 
+        /// <summary>
+        /// 未绑定条码集合
+        /// </summary>
+        public List<string> unBindList { get; set; }
+
     }
 }
